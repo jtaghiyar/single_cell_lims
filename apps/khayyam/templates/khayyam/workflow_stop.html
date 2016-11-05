@@ -1,0 +1,17 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Delete Sample
+{% endblock %}
+
+{% block body %}
+<div class="container graybg">
+    <h5>Are you sure you want to stop the workflow run with run ID <i class="emph">{{run_id}}</i>?</h5><br>
+    <form action="{% url 'khayyam:workflow_stop' pk=pk %}" method="POST">
+        {% csrf_token %}
+        <input class="btn btn-danger btn-sm" type="submit" name="stop" value="Yes, I'm sure">
+        <a class="btn btn-default btn-sm" href="{% url 'picasso:run_detail' pk=pk %}">Cancel</a>
+    </form><br>
+</div>
+{% endblock %}

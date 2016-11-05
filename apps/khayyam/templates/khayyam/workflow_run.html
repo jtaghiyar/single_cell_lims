@@ -1,0 +1,80 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Workflow Run
+{% endblock %}
+
+{% block body %}
+<div class="container graybg">
+    <form action="{% url 'khayyam:workflow_run' %}" method="POST", enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Workflow Information</legend>
+            <table class="table-condensed">
+                <thead>
+                {% for field in run_form %}
+                <tr>
+                    <th>
+                    {{field.label_tag}}
+                    </th>
+                    <td>
+                    {{ field.errors }}
+                    {% if field.name == "workflow" %}
+                        {% if workflow and workflow.active %} <!-- should think of when workflow is not active. -->
+                        <select class="selectpicker" id="workflow" name="workflow">
+                            <option value={{workflow.pk}} selected="selected">{{workflow}}</option>
+                        </select>
+                        {% else %}
+                        <select class="selectpicker" id="workflow" name="workflow">
+                            <option value selected="selected">--------</option>
+                            {% for wf in active_workflows %}
+                            <option value={{wf.pk}}>{{wf}}</option>
+                            {% endfor %}
+                        </select>
+                        {% endif %}
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text }}</p>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </thead>
+            </table>
+        </fieldset><br>
+        <fieldset>
+            <table>
+            <legend>Input Data</legend>
+                <thead>
+                    <th id="thid">Input samples:</th>
+                    <td id="tdid">
+                    <select required class="selectpicker" multiple data-live-search="true" id="data_selected" name="data_selected" data-none-selected-text="--------">
+                        {% for seq in data_list %}
+                        {% if seq in data_selected %}
+                        <option selected="selected" value={{seq.pk}}>{{seq}}</option>
+                        {% else %}
+                        <option value={{seq.pk}}>{{seq}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    </td>
+                </thead>
+            </table>
+        </fieldset><br>
+       <fieldset>
+            <legend>Kronos Settings</legend>
+            <table class="table-condensed">
+                <thead>
+                {{kronos_formset}}
+                </thead>
+            </table>
+        </fieldset><br>
+        <fieldset>
+        <input class="btn btn-primary btn-sm" type="submit" name="run" value="Run">
+        <a class="btn btn-default btn-sm" href="{% url 'khayyam:home' %}">Cancel</a>
+    </form>
+</div><br>
+{% endblock %}

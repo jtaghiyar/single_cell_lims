@@ -42,8 +42,11 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'core.apps.CoreConfig', 
     'account.apps.AccountConfig', 
+    'khayyam.apps.KhayyamConfig',
+    'picasso.apps.PicassoConfig',
     'taggit',
     'simple_history',
+    # 'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -162,3 +165,22 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "uploads")
 
 # Login url
 LOGIN_URL = '/apps/account/login/'
+
+# Inegration settings
+WORKING_DIR_ROOT = '/Users/taghiyar_jafar/WorkSpace/BCCRC/Shahlab/IDAP/WD_ROOT'
+RESULTS_DIR_ROOT = '/Users/taghiyar_jafar/WorkSpace/BCCRC/Shahlab/IDAP/RD_ROOT'
+WORKFLOW_REPO_ROOT = '/Users/taghiyar_jafar/WorkSpace/BCCRC/Shahlab/IDAP/WR_ROOT'
+KRONOS_PYTHON_VENV = '/Users/taghiyar_jafar/WorkSpace/venv/django/bin/activate'
+
+# Celery configuration
+# from kombu import Exchange, Queue
+# CELERY_QUEUES = (
+#     Queue('default', Exchange('default'), routing_key='default'),
+#     Queue('workflow_run', Exchange('workflow_run'), routing_key='workflow_run'),
+#     Queue('workflow_stop', Exchange('workflow_stop'), routing_key='workflow_stop'),
+# )
+
+# CELERY_ROUTES = {
+#     'KronosTask': {'queue': 'workflow_run', 'routing_key': 'workflow_run'},
+#     'stop_workflow': {'queue': 'workflow_stop', 'routing_key': 'workflow_stop'},
+# }

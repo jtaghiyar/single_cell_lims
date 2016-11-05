@@ -1,0 +1,73 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Run Details
+{% endblock %}
+{% block body %}
+<!-- Meta Information -->
+<div class="container card">
+    <table class="table-condensed">
+        {% for field, value in run.get_field_values.items %}
+        <tr>
+            <th id="thid">{{field}}:</th>
+            <td id="tdid">{{value}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div><br>
+<!-- end of Meta Information -->
+
+<!-- Input Data -->
+<div class="container">
+    <h4>Input Data</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sequencing</th>
+                <th>Sample ID</th>
+                <th>Chip ID</th>
+                <th>Path to archive</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seq in run.get_data %}
+            <tr>
+                <td><a href="{{seq.get_absolute_url}}">{{seq}}</a></td>
+                <td>{{seq.library.sample}}</td>
+                <td>{{seq.library.pool_id}}</td>
+                <td>{{seq.sequencingdetail.path_to_archive}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div><br>
+<!-- end of Input Data -->
+
+<!-- Kronos Settings -->
+<div class="container">
+    <h4>Kronos Settings</h4>
+    <table class="table-condensed">
+        {% for field, value in run.kronos.get_field_values.items %}
+        <tr>
+            <th id="thid">{{field}}:</th>
+            <td id="tdid">{{value}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div><br>
+<!-- end of Kronos Settings -->
+
+<!-- footer bottons -->
+<div class="container" style="margin-bottom: 5px;">
+    <a class="btn btn-success btn-sm" href="{% url 'khayyam:workflow_re_run' pk=run.pk %}">Re-run</a>
+    <a class="btn btn-primary btn-sm" href="{% url 'khayyam:workflow_from_run' pk=run.pk %}">New run</a>
+    {% if user.is_superuser and is_running or is_authorized and is_running %}
+    <a class="btn btn-danger btn-sm" href="{% url 'khayyam:workflow_stop' pk=run.pk %}">Stop</a>
+    {% else %}
+    <a class="btn btn-danger btn-sm" disabled>Stop</a>
+    {% endif %}
+    <a style="float:right; margin:5px;" href={% url "picasso:run_list" %}>List of runs</a>
+</div><br>
+<!-- end of footer bottons -->
+{% endblock %}

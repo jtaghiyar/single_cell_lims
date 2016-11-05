@@ -1,0 +1,14 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Analytics
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <a href={% url "khayyam:workflow_run" %}>Run a workflow</a><br>
+    <a href={% url "picasso:run_list" %}>See a previous run</a><br>
+<!--     <a href={% url 'khayyam:workflow_from_run' pk=315 %}>testme</a> -->
+</div>
+{% endblock %}

@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^search/', views.search_view, name='search'),
     url(r'^apps/core/', include('core.urls')),
     url(r'^apps/account/', include('account.urls')),
+    url(r'^apps/khayyam/', include('khayyam.urls')),
+    url(r'^apps/picasso/', include('picasso.urls')),
 ]
 
 
