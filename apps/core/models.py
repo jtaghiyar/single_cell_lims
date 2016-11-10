@@ -277,7 +277,7 @@ class Library(models.Model, FieldValue, LibraryAssistant):
     relates_to = models.ManyToManyField(
         "self",
         verbose_name="Relates to",
-        null=True,
+        # null=True,
         blank=True,
         )
 
@@ -684,7 +684,7 @@ class Sequencing(models.Model, FieldValue):
     relates_to = models.ManyToManyField(
         "self",
         verbose_name="Relates to",
-        null=True,
+        # null=True,
         blank=True,
         )
 

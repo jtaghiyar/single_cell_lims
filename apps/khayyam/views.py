@@ -80,7 +80,7 @@ class WorkflowRun(TemplateView):
                 kronos_formset.save()
 
                 # run the workflow asynchronously
-                run_workflow.apply_async([run.id], countdown=3)
+                run_workflow.delay(run.id)
                 
                 msg = "Successfully triggered the workflow run."
                 messages.success(request, msg)
@@ -143,8 +143,7 @@ class WorkflowFromRun(TemplateView):
             kronos.save()
 
             # run the workflow asynchronously
-            run_workflow.apply_async([run.id], countdown=3)
-            
+            run_workflow.delay(run.id)
             msg = "Successfully triggered the workflow run."
             messages.success(request, msg)
             return HttpResponseRedirect(run.get_absolute_url())
@@ -188,7 +187,7 @@ class WorkflowReRun(WorkflowFromRun):
             kronos.save()
 
             # run the workflow asynchronously
-            run_workflow.apply_async([run.id], countdown=3)
+            run_workflow.delay(run.id)
             
             msg = "Successfully triggered the workflow run."
             messages.success(request, msg)
