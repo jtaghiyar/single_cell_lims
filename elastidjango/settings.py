@@ -178,3 +178,18 @@ WORKFLOWS_ARCHIVE = '/genesis/shahlab/IDAP/WORKFLOWS_ARCHIVE'
 KRONOS_PYTHON_VENV = '/shahlab/jtaghiyar/WorkSpace/kronos/venvs/kronos/bin/activate'
 RESULTS_DIR_ROOT = '/genesis/shahlab/IDAP/RD_ROOT'
 WORKING_DIR_ROOT = '/genesis/shahlab/IDAP/WD_ROOT'
+
+#=======================
+# Celery configuration
+#-----------------------
+from kombu import Exchange, Queue
+CELERY_QUEUES = (
+    Queue('celery', Exchange('celery'), routing_key='celery'),
+    Queue('workflow_run', Exchange('workflow_run'), routing_key='workflow_run'),
+    Queue('workflow_stop', Exchange('workflow_stop'), routing_key='workflow_stop'),
+)
+
+CELERY_ROUTES = {
+    'khayyam.tasks.run_workflow': {'queue': 'workflow_run', 'routing_key': 'workflow_run'},
+    'khayyam.tasks.stop_workflow': {'queue': 'workflow_stop', 'routing_key': 'workflow_stop'},
+}
