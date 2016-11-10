@@ -15,7 +15,7 @@ import subprocess as sub
 # Django imports
 #----------------------------
 from .models import Run, Workflow
-from .utils import FileHandler, get_samples_file
+from .utils import Runner, FileHandler, get_samples_file
 from django.conf import settings
 
 
@@ -23,44 +23,7 @@ from django.conf import settings
 # Celery imports
 #----------------------------
 from celery import shared_task, Task
-
-
-#============================
-# Helpers
-#----------------------------
-class Runner(object):
-
-    """
-    Helper to hanlde:
-    - sourcing python virtualenv
-    - ssh connection 
-    - command execution
-    """
-    
-    @staticmethod
-    def add_pyvenv(cmd):
-        """add 'source /path/to/virtualenv/python' to the command."""
-        pyvenv = settings.KRONOS_PYTHON_VENV
-        return 'source {0} && {1}'.format(pyvenv, cmd)
-
-    @staticmethod
-    def add_ssh(cmd):
-        """add 'ssh genesis' to the command."""
-        return 'ssh genesis {}'.format(repr(cmd))
-
-    @staticmethod
-    def run_cmd(cmd, cmd_args=[]):
-        """run command with the given arguments."""
-        proc = sub.Popen(cmd, stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
-        print "Running command:", cmd #cmd_args
-        cmdout, cmderr = proc.communicate()
-        if cmdout:
-            # logging.info(cmdout)
-            print "cmdout: ", cmdout
-        if cmderr:
-            # logging.error(cmderr)
-            print "cmderr: ", cmderr
-        return proc.returncode
+from celery.registry import tasks
 
 
 #============================
@@ -70,7 +33,7 @@ class KronosTask(Task):
     # ignore_result = True
     default_retry_delay = 2 * 60
     max_tries = 3
-    file_handler = FileHandler()
+    # file_handler = FileHandler()
 
     def run(self, pk, *args, **kwargs):
         """perform kronos run command."""
@@ -136,12 +99,29 @@ class KronosTask(Task):
         run.save()
         print msg.format(task_id, retval)
 
-run_workflow = KronosTask()
+# The following line no longer works in celery 4.0.0, i.e.
+# celery doesn't register the task. So, I had to invoke to
+# the 'shared_task' decorator.
+# run_workflow = KronosTask()
+@shared_task(base=KronosTask)
+def run_workflow(pk):
+    kt = KronosTask()
+    return kt.run(pk)
+
 
 @shared_task
 def stop_workflow(id):
     """force a workflow to stop running."""
+    ## should add a task revoke here to kill
+    ## the running workflow and then update the status
     run = Run.objects.get(pk=id)
     run.status = "S"
     run.save()
     print "stopped the workflow with run ID %s" % run.run_id
+
+
+# def kill(pid):
+#     """kill the job with the given pid."""
+#     import os
+#     import signal
+#     os.kill(pid, signal.SIGTERM)

@@ -31,6 +31,42 @@ def get_samples_file(data, *args, **kwargs):
     return "/path/foo.text"
 
 
+class Runner(object):
+
+    """
+    Helper to hanlde:
+    - sourcing python virtualenv
+    - ssh connection
+    - command execution
+    """
+
+    @staticmethod
+    def add_pyvenv(cmd):
+        """add 'source /path/to/virtualenv/python' to the command."""
+        pyvenv = settings.KRONOS_PYTHON_VENV
+        return 'source {0} && {1}'.format(pyvenv, cmd)
+
+    @staticmethod
+    def add_ssh(cmd):
+        """add 'ssh genesis' to the command."""
+        return 'ssh genesis {}'.format(repr(cmd))
+
+    @staticmethod
+    def run_cmd(cmd, cmd_args=[]):
+        """run command with the given arguments."""
+        cmd = cmd + ' ' + ' '.join(cmd_args)
+        proc = sub.Popen(cmd, stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
+        print "Running command:", cmd #cmd_args
+        cmdout, cmderr = proc.communicate()
+        if cmdout:
+            # logging.info(cmdout)
+            print "cmdout: ", cmdout
+        if cmderr:
+            # logging.error(cmderr)
+            print "cmderr: ", cmderr
+        return proc.returncode
+
+
 class FileHandler(object):
 
     """

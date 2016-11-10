@@ -47,7 +47,8 @@ class Workflow(models.Model):
     setup_file = create_pathfield("Setup file", blank=False)
     repository = create_pathfield("Repository", blank=False)
     python_venv = create_pathfield("Python Virtualenv")
-    active = models.BooleanField("Active", blank=False)
+    archive_path = create_pathfield("Archive path")
+    active = models.BooleanField("Active")
 
     objects = models.Manager()
     active_objects = ActiveWorkflowManager()
