@@ -7,6 +7,8 @@ Created on Oct 20, 2016
 import os, sys
 import subprocess as sub
 import logging
+import smtplib
+import traceback
 # import pandas as pd 
 # from string import Template
 
@@ -15,6 +17,8 @@ import logging
 #----------------------------
 # from .models import SublibraryInformation
 from django.conf import settings
+from .models import Workflow
+from django.contrib.auth.models import User
 
 
 logging.basicConfig(
@@ -28,7 +32,7 @@ logging.basicConfig(
 #--------------------------------------------------
 def get_samples_file(data, *args, **kwargs):
     """make a samples file and save it in temporary working directory."""
-    return "/path/foo.text"
+    return "/genesis/shahlab/IDAP/dev/test/samples_file.txt1"
 
 
 class Runner(object):
@@ -139,3 +143,36 @@ class Kronos(object):
     def picasso_hand_shake(self):
         """interface to Picasso app."""
         pass
+
+def notify(run):
+    """ send an email notification when workflow status changes."""
+    Subject = "Status update for {}".format(
+        Workflow.objects.get(pk=run.workflow))
+    To = User.objects.get(username=run.user).email
+    From = settings.EMAIL_ADDRESS
+    msg = "Hi {0},\n\n"
+    msg += "There is an update in the status ({1}) of your workflow "
+    msg += "run: {2}."
+    msg += "\n\nPlease DO NOT reply to this email."
+    msg += "\nShalab Dev Team."
+    url = settings.HOST_URL
+    url += run.get_absolute_url()
+    msg = msg.format(run.user, run.get_status_display(), url)
+    Body = '\r\n'.join([
+        'To: %s' % To,
+        'From: %s' % From,
+        'Subject: %s' % Subject,
+        '', msg
+        ])
+    try:
+        server = smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT)
+        server.ehlo()
+        server.starttls()
+        server.login(From, settings.EMAIL_PASSWORD)
+        server.sendmail(From, [To], Body)
+        server.close()
+        return True
+    except:
+        traceback.print_exc()
+        return False
+

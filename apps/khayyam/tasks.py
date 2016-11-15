@@ -15,7 +15,7 @@ import subprocess as sub
 # Django imports
 #----------------------------
 from .models import Run, Workflow
-from .utils import Runner, FileHandler, get_samples_file
+from .utils import Runner, FileHandler, get_samples_file, notify
 from django.conf import settings
 
 
@@ -63,13 +63,16 @@ class KronosTask(Task):
         config_file = wf.config_file
 
         scheduler = "sge"
-        wdir = os.path.join(str(wf), run.user)
-        samples_file = get_samples_file(run.get_data(), wdir)
         qsub_options = ' -hard -q shahlab.q'
         qsub_options += ' -pe ncpus {num_cpus}'
         qsub_options += ' -l mem_free={mem} -l mem_token={mem}'
         qsub_options += ' -w n'
         qsub_options = repr(qsub_options)
+
+        wdir = os.path.join(settings.WORKING_DIR_ROOT, pname, run.user, run_id)
+        # if not os.path.exists(wdir):
+        #     os.makedirs(wdir)
+        samples_file = get_samples_file(run.get_data(), wdir)
 
         cmd = "kronos run"
         cmd_args = [
@@ -90,19 +93,20 @@ class KronosTask(Task):
         
     def on_success(self, retval, task_id, *args, **kwargs): 
         """update the run status on success."""       
-        msg = "this is in on_success call from task {0} with return value {1}."
-        id = args[0][0]
-        run = Run.objects.get(pk=id)
+        pk = args[0][0]
+        run = Run.objects.get(pk=pk)
         status = ["D", "F", "S"]
         i = randint(0,2)
         run.status = status[i]
         run.save()
-        print msg.format(task_id, retval)
+        print "notifying user ..."
+        success = notify(run)
+        if success:
+            print "notification sent."
+        else:
+            print "notification failed."
 
-# The following line no longer works in celery 4.0.0, i.e.
-# celery doesn't register the task. So, I had to invoke to
-# the 'shared_task' decorator.
-# run_workflow = KronosTask()
+
 @shared_task(base=KronosTask)
 def run_workflow(pk):
     kt = KronosTask()

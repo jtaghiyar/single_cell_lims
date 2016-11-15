@@ -193,3 +193,11 @@ CELERY_ROUTES = {
     'khayyam.tasks.run_workflow': {'queue': 'workflow_run', 'routing_key': 'workflow_run'},
     'khayyam.tasks.stop_workflow': {'queue': 'workflow_stop', 'routing_key': 'workflow_stop'},
 }
+
+#=========================
+# Email configuration
+#-------------------------
+EMAIL_ADDRESS = ""
+EMAIL_PASSWORD = ""
+SMTP_SERVER = ""
+SMTP_PORT = 0
