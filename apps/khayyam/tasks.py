@@ -119,8 +119,9 @@ def stop_workflow(id):
     ## should add a task revoke here to kill
     ## the running workflow and then update the status
     run = Run.objects.get(pk=id)
-    run.status = "S"
-    run.save()
+    if run.status == "R":
+        run.status = "S"
+        run.save()
     print "stopped the workflow with run ID %s" % run.run_id
 
 

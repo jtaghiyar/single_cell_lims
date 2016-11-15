@@ -66,7 +66,7 @@ class WorkflowRun(TemplateView):
             # update the attributes of the run instance that
             # users don't specify in the input form.
             run = run_form.save(commit=False)
-            run.run_id = datetime.now().isoformat()
+            run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = str(request.user)
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
@@ -128,7 +128,7 @@ class WorkflowFromRun(TemplateView):
             # update the attributes of the run instance that
             # users don't specify in the input form.
             run = run_form.save(commit=False)
-            run.run_id = datetime.now().isoformat()
+            run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = str(request.user)
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
@@ -204,14 +204,9 @@ def workflow_stop(request, pk):
     """sample delete page."""
     run = get_object_or_404(Run, pk=pk)
     if request.method == 'POST':
-        if run.status == "R":
-            stop_workflow.delay(pk)
-            msg = "Successfully triggered the workflow stop."
-            messages.success(request, msg)
-        else:
-            msg = "Oops! The workflow cannot be stopped. "
-            msg += "It is not running."
-            messages.warning(request, msg)
+        stop_workflow.delay(pk)
+        msg = "Successfully triggered the workflow stop."
+        messages.success(request, msg)
         return HttpResponseRedirect(run.get_absolute_url())
 
     context = {
