@@ -201,3 +201,12 @@ EMAIL_ADDRESS = ""
 EMAIL_PASSWORD = ""
 SMTP_SERVER = ""
 SMTP_PORT = 0
+
+#=========================
+# Genesis cluster settings
+#-------------------------
+QCMD_PREFIX = ''
+SGE_ROOT = ''
+SGE_QMASTER_PORT = ''
+SGE_EXECD_PORT = ''
+SGE_CELL = ''

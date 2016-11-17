@@ -32,7 +32,7 @@ logging.basicConfig(
 #--------------------------------------------------
 def get_samples_file(data, *args, **kwargs):
     """make a samples file and save it in temporary working directory."""
-    return "/genesis/shahlab/IDAP/dev/test/samples_file.txt1"
+    return "/genesis/shahlab/IDAP/dev/test/samples_file_short.txt"
 
 
 class Runner(object):
@@ -53,6 +53,15 @@ class Runner(object):
     @staticmethod
     def add_ssh(cmd):
         """add 'ssh genesis' to the command."""
+        cmd = ' '.join([
+        'export',
+        'SGE_ROOT=%s' % settings.SGE_ROOT,
+        'SGE_QMASTER_PORT=%s' % settings.SGE_QMASTER_PORT,
+        'SGE_EXECD_PORT=%s' % settings.SGE_EXECD_PORT,
+        'SGE_CELL=%s' % settings.SGE_CELL,
+        '&&',
+        cmd
+        ])
         return 'ssh genesis {}'.format(repr(cmd))
 
     @staticmethod
@@ -146,14 +155,13 @@ class Kronos(object):
 
 def notify(run):
     """ send an email notification when workflow status changes."""
-    Subject = "Status update for {}".format(
-        Workflow.objects.get(pk=run.workflow))
+    Subject = "Status update for {}".format(run.get_workflow_display())
     To = User.objects.get(username=run.user).email
     From = settings.EMAIL_ADDRESS
     msg = "Hi {0},\n\n"
     msg += "There is an update in the status ({1}) of your workflow "
     msg += "run: {2}."
-    msg += "\n\nPlease DO NOT reply to this email."
+    msg += "\n\nPlease do NOT reply to this email."
     msg += "\nShalab Dev Team."
     url = settings.HOST_URL
     url += run.get_absolute_url()
