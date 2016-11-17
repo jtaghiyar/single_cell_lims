@@ -7,7 +7,7 @@ Sequencing Details
 
 {% block body %}
 <!-- Meta Information -->
-<div class="container" style="background-color:#FFF3E0;">
+<div class="container card">
     <table class="table-condensed">
         <tr>
             <th id="thid">Library:</th>
@@ -31,7 +31,7 @@ Sequencing Details
 </div><br>
 <!-- end of Meta Information -->
     
-<!-- Sublibrary Information -->
+<!-- Sequencing Detail -->
 <div class="container">
     <h4>Sequencing Details</h4>
     {% if sequencing.has_sequencing_detail %}
@@ -47,7 +47,7 @@ Sequencing Details
     <h5><i class="text-warning">There is no sequencing details for this library!</i></h5>
     {% endif %}
 </div><br>
-<!-- end of Sublibrary Information -->
+<!-- end of Sequencing Detail -->
 
 <!-- footer bottons -->
 <div class="container" style="margin-bottom:5px;">

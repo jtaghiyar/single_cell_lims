@@ -93,6 +93,18 @@ td, th {
 .graybg {
     background-color: #F5F5F5;
 }
+
+.pathbox {
+    border: solid 1px #9E9E9E;
+    padding: 5px 5px 0px 5px;
+    font-family: "Courier New", Courier, monospace;
+    border-radius:3px;
+}
+
+.card {
+    background-color: #FFF3E0;
+}
+
 a:hover {
     color: #FF5722;
 }
