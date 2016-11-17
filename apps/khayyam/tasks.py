@@ -65,8 +65,8 @@ class KronosTask(Task):
         scheduler = "sge"
         qsub_options = ' -hard -q shahlab.q'
         qsub_options += ' -pe ncpus {num_cpus}'
-        qsub_options += ' -l mem_free={mem} -l mem_token={mem}'
-        qsub_options += ' -w n'
+        qsub_options += ' -l mem_free={mem} -l h_vmem={mem} -l mem_token={mem}'
+        # qsub_options += ' -w n'
         qsub_options = repr(qsub_options)
 
         wdir = os.path.join(settings.WORKING_DIR_ROOT, pname, run.user, run_id)
@@ -122,7 +122,13 @@ def stop_workflow(id):
     if run.status == "R":
         run.status = "S"
         run.save()
-    print "stopped the workflow with run ID %s" % run.run_id
+        print "stopped the workflow with run ID %s" % run.run_id
+        print "notifying user ..."
+        success = notify(run)
+        if success:
+            print "notification sent."
+        else:
+            print "notification failed."
 
 
 # def kill(pid):
