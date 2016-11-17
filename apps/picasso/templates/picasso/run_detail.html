@@ -4,6 +4,7 @@
 {% block title %}
 Run Details
 {% endblock %}
+
 {% block body %}
 <!-- Meta Information -->
 <div class="container card">
@@ -43,6 +44,18 @@ Run Details
     </table>
 </div><br>
 <!-- end of Input Data -->
+
+<!-- Output Data -->
+<div class="container">
+    <h4>Output Data</h4>
+    <p>Once the run is complete, you can access the results here:</p>
+    <div class="table-responsive graybg pathbox">
+        <p>{{output_path}}</p>
+    </div><br>
+    <p><b>NOTE: </b>This path is temporary and will be deleted after <b>30 days</b> from the date shown above. If you want to archive the results permanently please verify them and click "Accept".</p>
+    <a class="btn btn-primary btn-sm" href="#" style="float:right;">Accept</a>
+</div><br>
+<!-- end of Output Data -->
 
 <!-- Kronos Settings -->
 <div class="container">
