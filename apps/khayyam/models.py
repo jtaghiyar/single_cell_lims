@@ -5,6 +5,7 @@ Created on Oct 20, 2016
 """
 
 from __future__ import unicode_literals
+from datetime import datetime
 
 #============================
 # Django imports
@@ -103,6 +104,15 @@ class Run(models.Model, FieldValue):
     def get_data(self):
         ids = self.data.strip().split(',')
         return Sequencing.objects.filter(id__in=ids)
+
+    def days_to_expire(self):
+        """"calc number of days left before the run's temp results expire."""
+        days = 30
+        if not self.status == "R":
+            today = datetime.now().date()
+            d = (today - self.date).days
+            days = 0 if d >= days else days - d
+        return days
 
     def __str__(self):
         return self.run_id
