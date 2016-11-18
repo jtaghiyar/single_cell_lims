@@ -50,12 +50,30 @@ Run Details
 <!-- Output Data -->
 <div class="container">
     <h4>Output Data</h4>
-    <p>Once the run is complete, you can access the results here:</p>
+    <p>You can access the results here:</p>
     <div class="table-responsive graybg pathbox">
         <p>{{output_path}}</p>
     </div><br>
-    <p><b>NOTE: </b>This path is temporary and will be deleted after <b>30 days</b> from the date shown above. If you want to archive the results permanently please verify them and click "Accept".</p>
-    <a class="btn btn-primary btn-sm" href="#" style="float:right;">Accept</a>
+    {% if not run.accepted %}
+        <div id="temp_path">
+        <p><b>NOTE: </b>This path is temporary and will be deleted after <b>30 days</b> from the date shown above. If you want to archive the results permanently please verify them and click "Accept".</p>
+        {% if run.status == 'D'%}
+        <form action={% url "picasso:run_detail" pk=pk%} method="POST", enctype="multipart/form-data">
+            {% csrf_token %}
+            <input class="btn btn-primary btn-sm" type="submit" name="accept" value="Accept">
+            <a style="float:right; margin:5px;" href={% url "picasso:home" %}>Go to viz</a>
+        </form>
+        {% else %}
+        <p><b>NOTE: </b>You cannot visualize or accept the results since the run has not finished successfully.</p>
+        {% endif %}
+        </div>
+    {% else %}
+        <div id="perm_path">
+        <i class="fa fa-check" aria-hidden="true" style="color:green;">Results verified by {{run.accepted_by}}</i>
+        <a style="float:right; margin:5px;" href={% url "picasso:home" %}>Go to viz</a>
+        </div>
+    {% endif %}
+
 </div><br>
 <!-- end of Output Data -->
 

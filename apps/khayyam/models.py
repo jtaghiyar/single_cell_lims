@@ -63,8 +63,8 @@ class Run(models.Model, FieldValue):
     A model for storing a workflow run information.
     """
 
-    fields_to_exclude = ['ID', 'Data']
-    values_to_exclude = ['id', 'data']
+    fields_to_exclude = ['ID', 'Data', 'Accepted', 'Accepted by']
+    values_to_exclude = ['id', 'data', 'accepted', 'accepted_by']
 
     class Meta:
         ordering = ('run_id',)
@@ -91,6 +91,8 @@ class Run(models.Model, FieldValue):
     status = create_chrfield("Status", choices=status_choices, blank=False)
     comments = create_textfield("Comments")
     data = create_textfield("Data", blank=False, max_length=1000)
+    accepted = models.BooleanField("Accepted")
+    accepted_by = create_chrfield("Accepted by")
 
     def get_absolute_url(self):
         return reverse("picasso:run_detail", kwargs={"pk": self.pk})
@@ -104,9 +106,6 @@ class Run(models.Model, FieldValue):
 
     def __str__(self):
         return self.run_id
-
-    def todict(self):
-        return {'a':'b'}
 
 
 # class Data(models.Model, FieldValue):

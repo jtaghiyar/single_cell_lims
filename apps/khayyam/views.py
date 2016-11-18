@@ -71,6 +71,7 @@ class WorkflowRun(TemplateView):
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
+            run.accepted = False
             run.data = ','.join(request.POST.getlist('data_selected'))
 
             kronos_formset = KronosInlineFormset(request.POST, instance=run)
@@ -133,6 +134,7 @@ class WorkflowFromRun(TemplateView):
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
+            run.accepted = False
             run.data = ','.join(request.POST.getlist('data_selected'))
             
             # save the new run
@@ -175,6 +177,7 @@ class WorkflowReRun(WorkflowFromRun):
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
+            run.accepted = False
             run.data = ','.join(request.POST.getlist('data_selected'))
             # run.rerun = '**RERUN OF <a href="{0}">{1}</a>**'.format(
             # run.get_absolute_url(), run.run_id)
