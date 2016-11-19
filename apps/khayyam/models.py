@@ -6,10 +6,12 @@ Created on Oct 20, 2016
 
 from __future__ import unicode_literals
 from datetime import datetime
+import os
 
 #============================
 # Django imports
 #----------------------------
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -113,6 +115,28 @@ class Run(models.Model, FieldValue):
             d = (today - self.date).days
             days = 0 if d >= days else days - d
         return days
+
+    def get_path_temp(self):
+        """"get the temporary run's results path in the working dir."""
+        path = os.path.join(
+            settings.WORKING_DIR_ROOT,
+            self.get_workflow_display(),
+            self.user,
+            self.run_id,
+            self.run_id
+            )
+        return path
+
+    def get_path_perm(self):
+        """"get the permanent run's results path in the results archive."""
+        path = os.path.join(
+            settings.RESULTS_ARCHIVE,
+            self.get_workflow_display(),
+            self.user,
+            self.run_id,
+            self.run_id
+            )
+        return path
 
     def __str__(self):
         return self.run_id

@@ -36,18 +36,8 @@ def home_view(request):
 @Render("picasso/run_detail.html")
 def run_detail(request, pk):
     """Run detail page."""
-    def _get_output_path(run, output_root):
-        path = os.path.join(
-            output_root,
-            run.get_workflow_display(),
-            run.user,
-            run.run_id,
-            run.run_id
-            )
-        return path
-
     run = get_object_or_404(Run, pk=pk)
-    output_root = settings.WORKING_DIR_ROOT
+    output_path = run.get_path_temp()
     is_running = False
     is_authorized = False
     if run.status == "R":
@@ -55,7 +45,7 @@ def run_detail(request, pk):
     if run.user == request.user.username:
         is_authorized = True
     if run.accepted:
-        output_root = settings.RESULTS_ARCHIVE
+        output_path = run.get_path_perm()
     # if results are already accepted, refreshing the POST page
     # shouldn't trigger the saving and copying again. So, we need
     # to check for if not run.accepted.
@@ -63,14 +53,14 @@ def run_detail(request, pk):
         run.accepted = True
         run.accepted_by = request.user.username
         run.save()
-        move_files.delay(output_root, '/path/to/RESULTS_ARCHIVE')
-        output_root = settings.RESULTS_ARCHIVE
+        move_files.delay(run.get_temp_path(), run.get_perm_path())
+        output_path = run.get_path_perm()
     context = {
     'pk': pk,
     'run': run,
     'is_running': is_running,
     'is_authorized': is_authorized,
-    'output_path': _get_output_path(run, output_root),
+    'output_path': output_path,
     }
     return context
 
