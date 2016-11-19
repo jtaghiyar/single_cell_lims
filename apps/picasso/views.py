@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 #============================
 # App imports
 #----------------------------
+from .tasks import move_files
 from core.decorators import Render
 from khayyam.models import Run
 
@@ -49,16 +50,20 @@ def run_detail(request, pk):
     output_root = settings.WORKING_DIR_ROOT
     is_running = False
     is_authorized = False
-    if request.method == 'POST':
-        run.accepted = True
-        run.accepted_by = request.user.username
-        run.save()
-    if run.accepted:
-        output_root = settings.RESULTS_ARCHIVE
     if run.status == "R":
         is_running = True
     if run.user == request.user.username:
         is_authorized = True
+    if run.accepted:
+        output_root = settings.RESULTS_ARCHIVE
+    # if results are already accepted, refreshing the POST page
+    # shouldn't trigger the saving and copying again. So, we need
+    # to check for if not run.accepted.
+    elif request.method == 'POST':
+        run.accepted = True
+        run.accepted_by = request.user.username
+        run.save()
+        move_files.delay(output_root, '/path/to/RESULTS_ARCHIVE')
     context = {
     'pk': pk,
     'run': run,
