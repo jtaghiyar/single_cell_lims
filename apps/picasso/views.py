@@ -64,6 +64,7 @@ def run_detail(request, pk):
         run.accepted_by = request.user.username
         run.save()
         move_files.delay(output_root, '/path/to/RESULTS_ARCHIVE')
+        output_root = settings.RESULTS_ARCHIVE
     context = {
     'pk': pk,
     'run': run,
