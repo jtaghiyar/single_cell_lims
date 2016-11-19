@@ -15,7 +15,7 @@ import subprocess as sub
 # Django imports
 #----------------------------
 from .models import Run, Workflow
-from .utils import Runner, FileHandler, get_samples_file, notify
+from .utils import Runner, get_samples_file, notify
 from django.conf import settings
 
 
@@ -33,7 +33,6 @@ class KronosTask(Task):
     # ignore_result = True
     default_retry_delay = 2 * 60
     max_tries = 3
-    # file_handler = FileHandler()
 
     def run(self, pk, *args, **kwargs):
         """perform kronos run command."""
@@ -129,10 +128,3 @@ def stop_workflow(id):
             print "notification sent."
         else:
             print "notification failed."
-
-
-# def kill(pid):
-#     """kill the job with the given pid."""
-#     import os
-#     import signal
-#     os.kill(pid, signal.SIGTERM)
