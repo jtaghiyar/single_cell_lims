@@ -46,14 +46,12 @@ def run_detail(request, pk):
         is_authorized = True
     if run.accepted:
         output_path = run.get_path_perm()
-    # if results are already accepted, refreshing the POST page
-    # shouldn't trigger the saving and copying again. So, we need
-    # to check for if not run.accepted.
+    # if results are already accepted, resending the POST request
+    # by refreshing the page shouldn't trigger the saving and copying again.
+    #  So, we need to check if not run.accepted.
     elif request.method == 'POST':
-        run.accepted = True
-        run.accepted_by = request.user.username
-        run.save()
-        move_files.delay(run.get_temp_path(), run.get_perm_path())
+        run.accept_by(request.user.username)
+        move_files.delay('a', 'b')
         output_path = run.get_path_perm()
     context = {
     'pk': pk,

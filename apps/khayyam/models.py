@@ -138,6 +138,12 @@ class Run(models.Model, FieldValue):
             )
         return path
 
+    def accept_by(self, username):
+        if not self.accepted:
+            self.accepted = True
+            self.accepted_by = username
+            self.save()
+
     def __str__(self):
         return self.run_id
 
