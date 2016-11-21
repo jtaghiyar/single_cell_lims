@@ -123,7 +123,6 @@ class Run(models.Model, FieldValue):
             self.get_workflow_display(),
             self.user,
             self.run_id,
-            self.run_id
             )
         return path
 
@@ -134,7 +133,6 @@ class Run(models.Model, FieldValue):
             self.get_workflow_display(),
             self.user,
             self.run_id,
-            self.run_id
             )
         return path
 
