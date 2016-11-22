@@ -35,7 +35,7 @@ SECRET_KEY = ''
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+HOST_URL = ''
 
 # Application definition
 
@@ -175,8 +175,7 @@ RESULTS_ARCHIVE = '/genesis/shahlab/IDAP/RESULTS_ARCHIVE'
 WORKFLOWS_ARCHIVE = '/genesis/shahlab/IDAP/WORKFLOWS_ARCHIVE'
 
 # working env
-KRONOS_PYTHON_VENV = '/shahlab/jtaghiyar/WorkSpace/kronos/venvs/kronos/bin/activate'
-RESULTS_DIR_ROOT = '/genesis/shahlab/IDAP/RD_ROOT'
+KRONOS_PYTHON_VENV = '/genesis/shahlab/IDAP/VENV/kronos_2.3.1_dev/bin/activate'
 WORKING_DIR_ROOT = '/genesis/shahlab/IDAP/WD_ROOT'
 
 #=======================
