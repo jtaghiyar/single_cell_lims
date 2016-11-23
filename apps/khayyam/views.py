@@ -67,7 +67,7 @@ class WorkflowRun(TemplateView):
             # users don't specify in the input form.
             run = run_form.save(commit=False)
             run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-            run.user = str(request.user)
+            run.user = request.user.username
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
@@ -130,7 +130,7 @@ class WorkflowFromRun(TemplateView):
             # users don't specify in the input form.
             run = run_form.save(commit=False)
             run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-            run.user = str(request.user)
+            run.user = request.user.username
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
@@ -173,7 +173,7 @@ class WorkflowReRun(WorkflowFromRun):
             # update the attributes of the run instance that
             # users don't specify in the input form.
             run = run_form.save(commit=False)
-            run.user = str(request.user)
+            run.user = request.user.username
             run.date = datetime.now().date().isoformat()
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
