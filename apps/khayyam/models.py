@@ -123,7 +123,6 @@ class Run(models.Model, FieldValue):
             self.get_workflow_display(),
             self.user,
             self.run_id,
-            self.run_id
             )
         return path
 
@@ -134,7 +133,6 @@ class Run(models.Model, FieldValue):
             self.get_workflow_display(),
             self.user,
             self.run_id,
-            self.run_id
             )
         return path
 
@@ -146,30 +144,6 @@ class Run(models.Model, FieldValue):
 
     def __str__(self):
         return self.run_id
-
-
-# class Data(models.Model, FieldValue):
-
-#     """
-#     A model for storing the data file used when running the workflow.
-#     """
-
-#     ## track history
-#     # history = HistoricalRecords(
-#     #     table_name='history_sublibrary_information'
-#     #     )
-
-#     ## database relationships
-#     run = models.ForeignKey(
-#         Run,
-#         verbose_name="Run",
-#         on_delete=models.CASCADE
-#         )
-
-#     ## other fields
-#     name = create_chrfield('Name')
-#     path = create_pathfield('Path')
-#     comments = create_textfield('Comments')
 
 
 class Kronos(models.Model, FieldValue):

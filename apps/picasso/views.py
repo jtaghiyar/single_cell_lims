@@ -37,7 +37,8 @@ def home_view(request):
 def run_detail(request, pk):
     """Run detail page."""
     run = get_object_or_404(Run, pk=pk)
-    output_path = run.get_path_temp()
+    temp_path = run.get_path_temp()
+    perm_path = run.get_path_perm()
     is_running = False
     is_authorized = False
     if run.status == "R":
@@ -45,14 +46,16 @@ def run_detail(request, pk):
     if run.user == request.user.username:
         is_authorized = True
     if run.accepted:
-        output_path = run.get_path_perm()
+        output_path = perm_path
     # if results are already accepted, resending the POST request
     # by refreshing the page shouldn't trigger the saving and copying again.
     #  So, we need to check if not run.accepted.
     elif request.method == 'POST':
         run.accept_by(request.user.username)
-        move_files.delay('a', 'b')
-        output_path = run.get_path_perm()
+        move_files.delay(temp_path, perm_path)
+        output_path = perm_path
+    else:
+        output_path = temp_path
     context = {
     'pk': pk,
     'run': run,

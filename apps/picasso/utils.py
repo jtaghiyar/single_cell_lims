@@ -6,6 +6,7 @@ Created on Nov 18, 2016
 
 from __future__ import absolute_import
 import os
+import shutil
 
 #============================
 # Django imports
@@ -24,6 +25,16 @@ class FileHandler(object):
         self.wd_root = settings.WORKING_DIR_ROOT
         self.rd_root = settings.RESULTS_DIR_ROOT
 
+    @staticmethod
+    def rename(src, dst):
+        """recursive dir/file renaming from src to dst."""
+        os.renames(src, dst)
+
+    @staticmethod
+    def move(src, dst):
+        """move dir/file from src to dst."""
+        shutil.move(src, dst)
+
     def make_tmp_wd(self, dir_name):
         """make a temporary working dir."""
         print "making temporary working directory ..."
@@ -37,11 +48,6 @@ class FileHandler(object):
     def copy_wf(self, wf_name, wf_version, dir_name):
         """copy the workflow in the given directory."""
         pass
-
-    @staticmethod
-    def rsync(src, dst):
-        """rcync from source to destination."""
-        print "copying from %s to %s" % (src, dst)
 
     def rmdir(self, dirpath):
         """remove directory."""

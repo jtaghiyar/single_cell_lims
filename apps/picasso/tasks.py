@@ -34,4 +34,8 @@ from celery.registry import tasks
 #----------------------------
 @shared_task
 def move_files(src, dst):
-    FileHandler.rsync(src, dst)
+    # since the src and dst are on the same Filesystem 
+    # we can simply rename the files.
+    print "moving files from %s to %s" % (src, dst)
+    FileHandler.rename(src, dst)
+
