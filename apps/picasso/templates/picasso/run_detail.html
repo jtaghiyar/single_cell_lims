@@ -62,7 +62,7 @@ Run Details
         <div class="table-responsive graybg pathbox">
             <p>{{output_path}}</p>
         </div><br>
-        <p><b>NOTE: </b>This path is temporary and will be deleted after <b>{{run.days_to_expire}} day(s)</b> from the date shown above. If you want to archive the results permanently please verify them and click "Accept".</p>
+        <p><b>NOTE: </b>This path is temporary and will be deleted after <b>{{run.days_to_expire}} day(s)</b>. If you want to archive the results permanently please verify them and click "Accept".</p>
         {% if run.status == 'D'%}
         <form action={% url "picasso:run_detail" pk=pk%} method="POST", enctype="multipart/form-data">
             {% csrf_token %}
