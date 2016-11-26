@@ -29,13 +29,13 @@ sys.path.append(os.path.join(BASE_DIR, 'apps'))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'bb%@)-1@itqoog@id-s+6)n@b&$2ifp&ns9n66oa2oo8bzn)v0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-HOST_URL = ''
+HOST_URL = 'http://127.0.0.1:8080/'
 
 # Application definition
 
@@ -104,11 +104,11 @@ DATABASES = {
     'default': {
         # for older django versions use ".postgresql_psycopg2"
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'singlecell_dev',
+        'USER': 'jtaghiyar',
+        'PASSWORD': 'supeghusegh',
         'HOST': '',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
@@ -196,16 +196,16 @@ CELERY_ROUTES = {
 #=========================
 # Email configuration
 #-------------------------
-EMAIL_ADDRESS = ""
-EMAIL_PASSWORD = ""
-SMTP_SERVER = ""
-SMTP_PORT = 0
+EMAIL_ADDRESS = "idap.shahlab@gmail.com"
+EMAIL_PASSWORD = "djangosupeghusegh"
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
 
 #=========================
 # Genesis cluster settings
 #-------------------------
-QCMD_PREFIX = ''
-SGE_ROOT = ''
-SGE_QMASTER_PORT = ''
-SGE_EXECD_PORT = ''
-SGE_CELL = ''
+QCMD_PREFIX = '/opt/sge/bin/lx24-amd64/'
+SGE_ROOT = '/opt/sge'
+SGE_QMASTER_PORT = '6444'
+SGE_EXECD_PORT = '6445'
+SGE_CELL = 'genesis'

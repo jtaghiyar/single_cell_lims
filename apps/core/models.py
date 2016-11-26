@@ -345,7 +345,8 @@ class SublibraryInformation(models.Model, FieldValue):
             [
                 self.library.sample.sample_id,
                 self.library.pool_id,
-                row + col,
+                'R' + row,
+                'C' + col,
             ]
             )
         return res
@@ -551,7 +552,7 @@ class LibraryQuantificationAndStorage(models.Model, FieldValue):
         null=True,
         blank=True
         )
-    dna_volumne = create_chrfield("DNA volume (uL)")
+    dna_volume = create_chrfield("DNA volume (uL)")
     library_location = create_chrfield(
         "Library location",
         choices=library_location_choices
