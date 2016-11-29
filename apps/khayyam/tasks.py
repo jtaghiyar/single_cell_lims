@@ -71,11 +71,11 @@ class KronosTask(Task):
         wdir = os.path.join(settings.WORKING_DIR_ROOT, pname, run.user, run_id)
         # if not os.path.exists(wdir):
         #     os.makedirs(wdir)
-        samples_file = get_samples_file(run.get_data(), wdir)
+        samples_file = get_samples_file(run.sequencings.all(), wdir)
 
         cmd = "kronos run"
         cmd_args = [
-        '-b', "sge",
+        '-b', scheduler,
         '-c', cdir,
         '-e', pname,
         '-i', samples_file,

@@ -21,20 +21,17 @@ Workflow Run
                     <td>
                     {{ field.errors }}
                     {% if field.name == "workflow" %}
-                        {% if workflow and workflow.active %} <!-- should think of when workflow is not active. -->
                         <select class="selectpicker" id="workflow" name="workflow">
                             <option value={{workflow.pk}} selected="selected">{{workflow}}</option>
                         </select>
-                        {% else %}
-                        <select class="selectpicker" id="workflow" name="workflow">
-                            <option value selected="selected">--------</option>
-                            {% for wf in active_workflows %}
-                            <option value={{wf.pk}}>{{wf}}</option>
-                            {% endfor %}
-                        </select>
-                        {% endif %}
-                    {% elif field.name == "comments" %}
-                        {{ field }}{{rerun|safe}}
+                    {% elif field.name == "sequencings" %}
+                    <select required class="selectpicker" id="sequencings" name="sequencings">
+                        {% for seq in data_list %}
+                            {% if seq in data_selected %}
+                            <option selected="selected" value={{seq.pk}}>{{seq}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                     {% else %}
                         {{ field }}
                     {% endif %}
@@ -47,25 +44,6 @@ Workflow Run
                 </thead>
             </table>
         </fieldset><br>
-        <fieldset>
-            <table>
-            <legend>Input Data</legend>
-                <thead>
-                    <th id="thid">Input samples:</th>
-                    <td id="tdid">
-                    <select required class="selectpicker" multiple data-live-search="true" id="data_selected" name="data_selected" data-none-selected-text="--------">
-                        {% for seq in data_list %}
-                        {% if seq in data_selected %}
-                        <option selected="selected" value={{seq.pk}}>{{seq}}</option>
-                        {% else %}
-                        <option value={{seq.pk}}>{{seq}}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                    </td>
-                </thead>
-            </table>
-        </fieldset><br>
        <fieldset>
             <legend>Kronos Settings</legend>
             <table class="table-condensed">
@@ -74,7 +52,6 @@ Workflow Run
                 </thead>
             </table>
         </fieldset><br>
-        <fieldset>
         <input class="btn btn-primary btn-sm" type="submit" name="run" value="Run">
         <a class="btn btn-default btn-sm" href="{% url 'picasso:run_detail' pk=pk %}">Cancel</a>
     </form>

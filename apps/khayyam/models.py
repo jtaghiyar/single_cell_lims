@@ -77,6 +77,9 @@ class Run(models.Model, FieldValue):
     #     table_name='history_sample'
     #     )
 
+    ## database relationships
+    sequencings = models.ManyToManyField(Sequencing)
+
     ## choices
     status_choices = (
         ('D','Done'),
@@ -93,19 +96,20 @@ class Run(models.Model, FieldValue):
     time = models.TimeField("Time", blank=False)
     status = create_chrfield("Status", choices=status_choices, blank=False)
     comments = create_textfield("Comments")
-    data = create_textfield("Data", blank=False, max_length=1000)
     accepted = models.BooleanField("Accepted")
     accepted_by = create_chrfield("Accepted by")
+
+    def save(self, sequencings=None, *args, **kwargs):
+        """save the m2m as well."""
+        if sequencings:
+            [self.sequencings.add(seq) for seq in sequencings]
+        super(Run, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("picasso:run_detail", kwargs={"pk": self.pk})
 
     def get_workflow_display(self):
         return str(Workflow.objects.get(pk=self.workflow))
-
-    def get_data(self):
-        ids = self.data.strip().split(',')
-        return Sequencing.objects.filter(id__in=ids)
 
     def days_to_expire(self):
         """"calc number of days left before the run's temp results expire."""

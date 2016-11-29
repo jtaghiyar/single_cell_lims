@@ -27,7 +27,7 @@ from .models import (
 class RunForm(forms.ModelForm):
     class Meta:
             model = Run
-            fields = ["workflow", "comments"]
+            fields = ["workflow", "sequencings", "comments"]
             # widgets = {
             # 'xenograft_biopsy_date': SelectDateWidget(
             #     years=range(2000, 2020),
@@ -36,6 +36,7 @@ class RunForm(forms.ModelForm):
             # }
             labels = {
                 'workflow': ('*Workflow:'),
+                'sequencings': ('*Input sequencing:'),
             }
             # help_texts = {
             #     'workflow': ('Select a workflow to run.'),

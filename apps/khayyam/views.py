@@ -60,6 +60,7 @@ class WorkflowRun(TemplateView):
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data()
+        request.POST['sequencings'] = ','.join(request.POST.getlist('sequencings'))
         run_form = RunForm(request.POST)
         context['run_form'] = run_form
         if run_form.is_valid():
@@ -72,12 +73,12 @@ class WorkflowRun(TemplateView):
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
             run.accepted = False
-            run.data = ','.join(request.POST.getlist('data_selected'))
 
             kronos_formset = KronosInlineFormset(request.POST, instance=run)
             context['kronos_formset'] = kronos_formset
             if kronos_formset.is_valid():
                 run.save()
+                run_form.save_m2m()
                 kronos_formset.save()
 
                 # run the workflow asynchronously
@@ -106,10 +107,11 @@ class WorkflowFromRun(TemplateView):
         run = get_object_or_404(Run, pk=pk)
         workflow = Workflow.objects.get(pk=run.workflow)
         context = {
+            'run': run,
             'run_form': RunForm(instance=run),
             'kronos_formset': KronosInlineFormset(instance=run),
             'data_list': Sequencing.objects.with_data(),
-            'data_selected': run.get_data(),
+            'data_selected': run.sequencings.all(),
             'active_workflows': Workflow.active_objects.all(),
             'workflow': workflow,
             'pk': pk,
@@ -118,11 +120,19 @@ class WorkflowFromRun(TemplateView):
 
     def get(self, request, pk, *args, **kwargs):
         context,_ = self.get_context_data(pk)
+        run = context['run']
+        wf = context['workflow']
+        if not wf.active:
+            msg = "The new run cannot be launched"
+            msg += " since the workflow of this run is no longer active."
+            messages.warning(request, msg)
+            return HttpResponseRedirect(run.get_absolute_url())
         return render(request, self.template_name, context)
 
     def post(self, request, pk, *args, **kwargs):
         context, kronos = self.get_context_data(pk)
         run = get_object_or_404(Run, pk=pk)
+        request.POST['sequencings'] = ','.join(request.POST.getlist('sequencings'))
         run_form = RunForm(request.POST, instance=run)
         context['run_form'] = run_form
         if run_form.is_valid():
@@ -135,11 +145,11 @@ class WorkflowFromRun(TemplateView):
             run.time = datetime.now().time().isoformat()
             run.status = "R" # running
             run.accepted = False
-            run.data = ','.join(request.POST.getlist('data_selected'))
             
             # save the new run
             run.pk = None
             run.save()
+            run_form.save_m2m()
             kronos.id = None
             kronos.run_id = run.id
             kronos.save()
@@ -162,43 +172,34 @@ class WorkflowReRun(WorkflowFromRun):
     from where it left off with the same run ID.
     """
 
-    template_name = "khayyam/workflow_re_run.html"
-
     def post(self, request, pk, *args, **kwargs):
-        context, kronos = self.get_context_data(pk)
+        _, kronos = self.get_context_data(pk)
         run = get_object_or_404(Run, pk=pk)
-        run_form = RunForm(request.POST, instance=run)
-        context['run_form'] = run_form
-        if run_form.is_valid():
-            # update the attributes of the run instance that
-            # users don't specify in the input form.
-            run = run_form.save(commit=False)
-            run.user = request.user.username
-            run.date = datetime.now().date().isoformat()
-            run.time = datetime.now().time().isoformat()
-            run.status = "R" # running
-            run.accepted = False
-            run.data = ','.join(request.POST.getlist('data_selected'))
-            # run.rerun = '**RERUN OF <a href="{0}">{1}</a>**'.format(
-            # run.get_absolute_url(), run.run_id)
-           
-            # save the new run
-            run.pk = None
-            run.save()
-            kronos.id = None
-            kronos.run_id = run.id
-            kronos.save()
+        run.user = request.user.username
+        run.date = datetime.now().date().isoformat()
+        run.time = datetime.now().time().isoformat()
+        run.status = "R" # running
+        run.accepted = False
+        # run.rerun = '**RERUN OF <a href="{0}">{1}</a>**'.format(
+        # run.get_absolute_url(), run.run_id)
 
-            # run the workflow asynchronously
-            run_workflow.delay(run.id)
-            
-            msg = "Successfully triggered the workflow run."
-            messages.success(request, msg)
-            return HttpResponseRedirect(run.get_absolute_url())
+        # save the new run with its m2m relations.
+        sequencings = run.sequencings.all()
+        run.pk = None
+        # run should save to have an id before we can add m2m.
+        run.save()
+        # update the m2m relationship.
+        run.save(sequencings)
+        kronos.id = None
+        kronos.run_id = run.id
+        kronos.save()
 
-        msg = "Failed to initialize the workflow. Please fix the errors below."
-        messages.error(request, msg)    
-        return render(request, self.template_name, context)
+        # run the workflow asynchronously
+        run_workflow.delay(run.id)
+
+        msg = "Successfully triggered the workflow re-run."
+        messages.success(request, msg)
+        return HttpResponseRedirect(run.get_absolute_url())
 
 
 @Render("khayyam/workflow_stop.html")
