@@ -64,13 +64,9 @@ class WorkflowRun(TemplateView):
         run_form = RunForm(request.POST)
         context['run_form'] = run_form
         if run_form.is_valid():
-            # update the attributes of the run instance that
-            # users don't specify in the input form.
             run = run_form.save(commit=False)
-            run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = request.user.username
             run.status = "R" # running
-            run.accepted = False
 
             kronos_formset = KronosInlineFormset(request.POST, instance=run)
             context['kronos_formset'] = kronos_formset
@@ -134,15 +130,13 @@ class WorkflowFromRun(TemplateView):
         run_form = RunForm(request.POST, instance=run)
         context['run_form'] = run_form
         if run_form.is_valid():
-            # update the attributes of the run instance that
-            # users don't specify in the input form.
             run = run_form.save(commit=False)
-            run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = request.user.username
             run.status = "R" # running
             run.accepted = False
+            run.run_id = None
             
-            # save the new run
+            # save it as a new run
             run.pk = None
             run.save()
             run_form.save_m2m()
@@ -174,16 +168,14 @@ class WorkflowReRun(WorkflowFromRun):
         run.user = request.user.username
         run.status = "R" # running
         run.accepted = False
-        # run.rerun = '**RERUN OF <a href="{0}">{1}</a>**'.format(
-        # run.get_absolute_url(), run.run_id)
 
-        # save the new run with its m2m relations.
+        # save it as a new run with the same Run ID and its m2m relationship.
+        # run must be saved (i.e. have an id) before we can add m2m. So,
+        # there are two calls to the save method.
         sequencings = run.sequencings.all()
         run.pk = None
-        # run should save to have an id before we can add m2m.
         run.save()
-        # update the m2m relationship.
-        run.save(sequencings)
+        run.save(sequencings=sequencings)
         kronos.id = None
         kronos.run_id = run.id
         kronos.save()

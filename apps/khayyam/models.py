@@ -96,13 +96,16 @@ class Run(models.Model, FieldValue):
     time = models.TimeField("Time", blank=False)
     status = create_chrfield("Status", choices=status_choices, blank=False)
     comments = create_textfield("Comments")
-    accepted = models.BooleanField("Accepted")
+    accepted = models.BooleanField("Accepted", default=False)
     accepted_by = create_chrfield("Accepted by")
 
-    def save(self, sequencings=None, *args, **kwargs):
-        """update the date and time and save the m2m as well."""
-        self.date = datetime.now().date().isoformat()
-        self.time = datetime.now().time().isoformat()
+    def save(self, sequencings=None, run_id=False, *args, **kwargs):
+        """update the run_id, date and time and save the m2m as well."""
+        if not self.pk:
+            self.date = datetime.now().date().isoformat()
+            self.time = datetime.now().time().isoformat()
+        if not self.run_id:
+            self.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
         if sequencings:
             [self.sequencings.add(seq) for seq in sequencings]
         super(Run, self).save(*args, **kwargs)
