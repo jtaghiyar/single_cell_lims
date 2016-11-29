@@ -100,7 +100,9 @@ class Run(models.Model, FieldValue):
     accepted_by = create_chrfield("Accepted by")
 
     def save(self, sequencings=None, *args, **kwargs):
-        """save the m2m as well."""
+        """update the date and time and save the m2m as well."""
+        self.date = datetime.now().date().isoformat()
+        self.time = datetime.now().time().isoformat()
         if sequencings:
             [self.sequencings.add(seq) for seq in sequencings]
         super(Run, self).save(*args, **kwargs)

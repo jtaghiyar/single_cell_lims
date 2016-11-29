@@ -69,8 +69,6 @@ class WorkflowRun(TemplateView):
             run = run_form.save(commit=False)
             run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = request.user.username
-            run.date = datetime.now().date().isoformat()
-            run.time = datetime.now().time().isoformat()
             run.status = "R" # running
             run.accepted = False
 
@@ -141,8 +139,6 @@ class WorkflowFromRun(TemplateView):
             run = run_form.save(commit=False)
             run.run_id = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
             run.user = request.user.username
-            run.date = datetime.now().date().isoformat()
-            run.time = datetime.now().time().isoformat()
             run.status = "R" # running
             run.accepted = False
             
@@ -176,8 +172,6 @@ class WorkflowReRun(WorkflowFromRun):
         _, kronos = self.get_context_data(pk)
         run = get_object_or_404(Run, pk=pk)
         run.user = request.user.username
-        run.date = datetime.now().date().isoformat()
-        run.time = datetime.now().time().isoformat()
         run.status = "R" # running
         run.accepted = False
         # run.rerun = '**RERUN OF <a href="{0}">{1}</a>**'.format(
