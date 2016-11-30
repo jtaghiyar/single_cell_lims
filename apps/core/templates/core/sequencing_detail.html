@@ -65,6 +65,7 @@ Sequencing Details
             <thead>
                 <th>Run ID</th>
                 <th>Workflow</th>
+                <th>Date</th>
                 <th>Status</th>
             </thead>
             <tbody>
@@ -72,6 +73,7 @@ Sequencing Details
                 <tr>
                 <td><a href="{{run.get_absolute_url}}">{{run.run_id}}</a></td>
                 <td>{{run.get_workflow_display}}</td>
+                <td>{{run.date}}</td>
                 <td>{{run.get_status_display}}</td>
                 </tr>
                 {% endfor %}

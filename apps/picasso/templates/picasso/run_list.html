@@ -16,7 +16,6 @@ List of Runs
                 <th>Run ID</th>
                 <th>Workflow</th>
                 <th>Sequencing</th>
-                <th>User</th>
                 <th>Date</th>
                 <th>Status</th>
             </thead>
@@ -28,7 +27,6 @@ List of Runs
                     {% for seq in run.sequencings.all %}
                     <td><a href="{{seq.get_absolute_url}}">{{seq}}</a></td>
                     {% endfor %}
-                    <td>{{run.user}}</td>
                     <td>{{run.date}}</td>
                     <td>{{run.get_status_display}}</td>
                 </tr>
