@@ -72,7 +72,7 @@ KronosInlineFormset =  forms.inlineformset_factory(
     # widgets = {},
     can_delete = False,
     help_texts = {
-        'num_jobs': "Choose in the range of 1-100.",
+        'num_jobs': "Choose in the range of 1-2000.",
         'num_pipelines': "Choose in the range of 1-50.",
     },
     )

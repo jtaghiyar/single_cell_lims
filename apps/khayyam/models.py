@@ -201,7 +201,7 @@ class Kronos(models.Model, FieldValue):
         "Number of jobs",
         default=1,
         validators=[
-            MaxValueValidator(100),
+            MaxValueValidator(2000),
             MinValueValidator(1)
         ],
         )
