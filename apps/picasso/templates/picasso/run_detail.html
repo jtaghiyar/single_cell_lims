@@ -65,7 +65,7 @@ Run Details
         <div class="table-responsive graybg pathbox">
             <p>{{output_path}}</p>
         </div><br>
-        <i class="fa fa-check" aria-hidden="true" style="color:green;">Results verified by {{run.accepted_by}}</i>
+        <i class="fa fa-check" aria-hidden="true" style="color:green;">Results accepted by {{run.accepted_by}}</i>
         <a style="float:right; margin:5px;" href={% url "picasso:home" %}>Go to viz</a>
     {% elif run.days_to_expire > 0 %}
         <p>You can access the results here:</p>

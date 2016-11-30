@@ -96,6 +96,7 @@ class Run(models.Model, FieldValue):
 
     ## choices
     status_choices = (
+        ('A', 'Accepted'),
         ('D','Done'),
         ('F','Failed'),
         ('R','Running'),
@@ -170,6 +171,7 @@ class Run(models.Model, FieldValue):
         if not self.accepted:
             self.accepted = True
             self.accepted_by = username
+            self.status = 'A'
             self.save()
 
     def __str__(self):
