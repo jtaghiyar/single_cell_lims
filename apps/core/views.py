@@ -49,6 +49,7 @@ from .utils import (
 # 3rd-party app imports
 #----------------------------
 from taggit.models import Tag
+from khayyam.models import Run
 
 
 #============================
@@ -614,16 +615,21 @@ def search_view(request):
     qs = Sample.objects.filter(sample_id=query_str)
     if qs:
         instance = qs[0]
+        return HttpResponseRedirect(instance.get_absolute_url())
 
     ## search for libraries
-    else:
-        qs = Library.objects.filter(pool_id=query_str)
-        if qs:
-            instance = qs[0]
-
-    if instance:
+    qs = Library.objects.filter(pool_id=query_str)
+    if qs:
+        instance = qs[0]
         return HttpResponseRedirect(instance.get_absolute_url())
-    else:
-        msg = "Sorry, no match found."
-        messages.warning(request, msg)
-        return HttpResponseRedirect(reverse('index'))
+
+    ## search for runs
+    qs = Run.objects.filter(run_id=query_str)
+    if qs:
+        instance = qs[0]
+        return HttpResponseRedirect(instance.get_absolute_url())
+
+    ## no match found message
+    msg = "Sorry, no match found."
+    messages.warning(request, msg)
+    return HttpResponseRedirect(reverse('index'))
