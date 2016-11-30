@@ -66,8 +66,22 @@ class Run(models.Model, FieldValue):
     A model for storing a workflow run information.
     """
 
-    fields_to_exclude = ['ID', 'Data', 'Accepted', 'Accepted by']
-    values_to_exclude = ['id', 'data', 'accepted', 'accepted_by']
+    fields_to_exclude = [
+    'ID',
+    'Data',
+    'Accepted',
+    'Accepted by',
+    'Re-run on',
+    'Re-run by'
+    ]
+    values_to_exclude = [
+    'id',
+    'data',
+    'accepted',
+    'accepted_by',
+    'rerun_at',
+    'rerun_by'
+    ]
 
     class Meta:
         ordering = ('run_id',)
@@ -98,6 +112,8 @@ class Run(models.Model, FieldValue):
     comments = create_textfield("Comments")
     accepted = models.BooleanField("Accepted", default=False)
     accepted_by = create_chrfield("Accepted by")
+    rerun_by = create_chrfield("Re-run by")
+    rerun_at = models.DateField("Re-run on", blank=True, null=True)
 
     def save(self, sequencings=None, run_id=False, *args, **kwargs):
         """update the run_id, date and time and save the m2m as well."""
@@ -119,9 +135,14 @@ class Run(models.Model, FieldValue):
     def days_to_expire(self):
         """"calc number of days left before the run's temp results expire."""
         days = 30
+        if self.rerun_at:
+            start_date = self.rerun_at
+        else:
+            start_date = self.date
+
         if not self.status == "R":
             today = datetime.now().date()
-            d = (today - self.date).days
+            d = (today - start_date).days
             days = 0 if d >= days else days - d
         return days
 

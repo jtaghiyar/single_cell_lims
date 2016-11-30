@@ -15,6 +15,16 @@ Run Details
             <td id="tdid">{{value}}</td>
         </tr>
         {% endfor %}
+        {% if run.rerun_at %}
+        <tr>
+            <th id="thid">Re-run by:</th>
+            <td id="tdid">{{run.rerun_by}}</td>
+        </tr>
+        <tr>
+            <th id="thid">Re-run on:</th>
+            <td id="tdid">{{run.rerun_at}}</td>
+        </tr>
+        {% endif %}
     </table>
 </div><br>
 <!-- end of Meta Information -->

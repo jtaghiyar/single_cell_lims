@@ -97,7 +97,8 @@ def workflow_re_run(request, pk):
     """ Re_run previous run with the same run ID."""
     if request.method == 'POST':
         run = get_object_or_404(Run, pk=pk)
-        run.user = request.user.username
+        run.rerun_at = datetime.now().date().isoformat()
+        run.rerun_by = request.user.username
         run.status = "R" # running
         run.save()
 
