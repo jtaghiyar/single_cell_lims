@@ -68,7 +68,7 @@ KronosInlineFormset =  forms.inlineformset_factory(
     Kronos,
     form = KronosForm,
     # exclude = ['delete'],
-    fields = ["num_jobs", "num_pipelines"],
+    fields = ["num_jobs"],
     # widgets = {},
     can_delete = False,
     help_texts = {
