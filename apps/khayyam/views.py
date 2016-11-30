@@ -167,18 +167,7 @@ class WorkflowReRun(WorkflowFromRun):
         run = get_object_or_404(Run, pk=pk)
         run.user = request.user.username
         run.status = "R" # running
-        run.accepted = False
-
-        # save it as a new run with the same Run ID and its m2m relationship.
-        # run must be saved (i.e. have an id) before we can add m2m. So,
-        # there are two calls to the save method.
-        sequencings = run.sequencings.all()
-        run.pk = None
         run.save()
-        run.save(sequencings=sequencings)
-        kronos.id = None
-        kronos.run_id = run.id
-        kronos.save()
 
         # run the workflow asynchronously
         run_workflow.delay(run.id)
