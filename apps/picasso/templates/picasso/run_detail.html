@@ -66,7 +66,7 @@ Run Details
         {% if run.status == 'D'%}
         <form action={% url "picasso:run_detail" pk=pk%} method="POST", enctype="multipart/form-data">
             {% csrf_token %}
-            <input class="btn btn-primary btn-sm" type="submit" name="accept" value="Accept">
+            <input class="btn btn-success btn-sm" type="submit" name="accept" value="Accept">
             <a style="float:right; margin:5px;" href={% url "picasso:home" %}>Go to viz</a>
         </form>
         {% else %}
@@ -99,12 +99,11 @@ Run Details
     <form action="{% url 'khayyam:workflow_re_run' pk=run.pk %}" method="POST", enctype="multipart/form-data" style="float:left; margin-right:4px;">
         {% csrf_token %}
         {% if run.status == "F" or run.status == "S" %}
-        <input class="btn btn-success btn-sm" type="submit" name="rerun" value="Re-run">
+        <input class="btn btn-primary btn-sm" type="submit" name="rerun" value="Re-run">
         {% else %}
-        <input class="btn btn-success btn-sm" type="submit" name="rerun" value="Re-run" disabled>
+        <input class="btn btn-primary btn-sm" type="submit" name="rerun" value="Re-run" disabled>
         {% endif %}
     </form>
-        <a class="btn btn-primary btn-sm" href="{% url 'khayyam:workflow_from_run' pk=run.pk %}">New run</a>
         {% if user.is_superuser and is_running or is_authorized and is_running %}
         <a class="btn btn-danger btn-sm" href="{% url 'khayyam:workflow_stop' pk=run.pk %}">Stop</a>
         {% else %}

@@ -29,13 +29,13 @@ sys.path.append(os.path.join(BASE_DIR, 'apps'))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bb%@)-1@itqoog@id-s+6)n@b&$2ifp&ns9n66oa2oo8bzn)v0'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-HOST_URL = 'http://127.0.0.1:8080/'
+HOST_URL = ''
 
 # Application definition
 
@@ -105,10 +105,10 @@ DATABASES = {
         # for older django versions use ".postgresql_psycopg2"
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'singlecell_dev',
-        'USER': 'jtaghiyar',
-        'PASSWORD': 'supeghusegh',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': '',
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 
@@ -196,10 +196,10 @@ CELERY_ROUTES = {
 #=========================
 # Email configuration
 #-------------------------
-EMAIL_ADDRESS = "idap.shahlab@gmail.com"
-EMAIL_PASSWORD = "djangosupeghusegh"
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+EMAIL_ADDRESS = ""
+EMAIL_PASSWORD = ""
+SMTP_SERVER = ""
+SMTP_PORT = 
 
 #=========================
 # Genesis cluster settings

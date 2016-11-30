@@ -28,9 +28,13 @@ Workflow Run
                     </select>
                     {% elif field.name == "sequencings" %}
                     <select required class="selectpicker" data-live-search="true" id="sequencings" name="sequencings" data-none-selected-text="--------">
-                        {% for seq in data_list %}
-                        <option value={{seq.pk}}>{{seq}}</option>
-                        {% endfor %}
+                        {% if sequencing_id %}
+                        <option value="{{sequencing_id}}" selected="selected">{{sequencing}}</option>
+                        {% else%}
+                            {% for seq in data_list %}
+                            <option value={{seq.pk}}>{{seq}}</option>
+                            {% endfor %}
+                        {% endif %}
                     </select>
                     {% else %}
                         {{ field }}

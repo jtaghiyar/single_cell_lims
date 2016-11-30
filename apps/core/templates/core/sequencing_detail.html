@@ -82,7 +82,7 @@ Sequencing Details
     <h5><i class="text-warning">There is no run information for this sequencing!</i></h5>
     {% endif %}
     {% if sequencing.sequencingdetail.path_to_archive %}
-    <a href="{% url 'khayyam:workflow_run' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> New run</a></p>
+    <a href="{% url 'khayyam:workflow_run_from_sequencing' from_sequencing=sequencing.pk %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> New run</a></p>
     {% endif %}
 </div><br>
 <!-- end of Run Information -->
