@@ -711,7 +711,10 @@ class Sequencing(models.Model, FieldValue):
         return reverse("core:sequencing_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return 'SEQ_' + self.library.get_library_id()
+        s = 'SEQ_' + self.library.get_library_id()
+        if self.has_sequencing_detail():
+            s += '_' + self.sequencingdetail.flow_cell_id
+        return s
 
 
 class SequencingDetail(models.Model, FieldValue):
