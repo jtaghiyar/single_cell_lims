@@ -77,7 +77,11 @@ Run Details
         {% if run.status == 'D'%}
         <form action={% url "picasso:run_detail" pk=pk%} method="POST", enctype="multipart/form-data">
             {% csrf_token %}
+            {% if user.is_authenticated %}
             <input class="btn btn-success btn-sm" type="submit" name="accept" value="Accept">
+            {% else %}
+            <input class="btn btn-success btn-sm" type="submit" name="accept" value="Accept" disabled>
+            {% endif %}
             <a style="float:right; margin:5px;" href={% url "picasso:home" %}>Go to viz</a>
         </form>
         {% else %}
