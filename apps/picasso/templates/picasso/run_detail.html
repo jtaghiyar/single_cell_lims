@@ -1,5 +1,6 @@
 {% extends "base_view.html" %}
 {% load staticfiles %}
+{% load verbose_names %}
 
 {% block title %}
 Run Details
@@ -17,11 +18,11 @@ Run Details
         {% endfor %}
         {% if run.rerun_at %}
         <tr>
-            <th id="thid">Re-run by:</th>
+            <th id="thid">{% get_verbose_field_name run "rerun_by" %}:</th>
             <td id="tdid">{{run.rerun_by}}</td>
         </tr>
         <tr>
-            <th id="thid">Re-run on:</th>
+            <th id="thid">{% get_verbose_field_name run "rerun_at" %}:</th>
             <td id="tdid">{{run.rerun_at}}</td>
         </tr>
         {% endif %}
