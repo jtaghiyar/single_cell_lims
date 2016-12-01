@@ -9,8 +9,9 @@ import subprocess as sub
 import logging
 import smtplib
 import traceback
-# import pandas as pd 
-# from string import Template
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 #============================
 # Django imports
@@ -111,49 +112,68 @@ class Kronos(object):
         """interface to Picasso app."""
         pass
 
+
 def notify(run):
     """ send an email notification when workflow status changes."""
     user = User.objects.get(username=run.user)
+    addr_to = user.email
+    addr_from = settings.EMAIL_ADDRESS
     url = settings.HOST_URL
     url += run.get_absolute_url()
+    status = run.get_status_display()
+    if status == "Done":
+        color = "green"
+    else:
+        color = "red"
 
-    Subject = "Status update for your workflow run"
-    To = user.email
-    From = settings.EMAIL_ADDRESS
-    msg = (
-        "Hi {user},\n\n"
-        "There is an update in the status of the following workflow run:\n\n"
-        "Run ID: {run_id}\n"
-        "Workflow name: {workflow_name}\n"
-        "Date: {date}\n"
-        "Current status: {status}\n\n"
-        "To re-run or to access the results and logfiles use this link:\n"
-        "{url}\n\n"
+    msg = MIMEMultipart('multipart')
+    msg['Subject'] = "Status update for your workflow run"
+    msg['To'] = addr_to
+    msg['From'] = addr_from
+    html = """
+    <html>
+        <head></head>
+        <body>
+            <p>Hi {user},</p>
+            <p>There is an update in the status of the following workflow run:<p>
+            <ul style="list-style-type:cicle">
+                <li><b>Run ID:</b> <a href="{url}">{run_id}</a></li>
+                <li><b>Workflow name:</b> {workflow_name}</li>
+                <li><b>Date:</b> {date}</li>
+                <li><b>Current status:</b> <font color="{color}">{status}</font></li>
+            </ul>
+        </body>
+    </html>
+    """.format(
+    user = user.first_name,
+    run_id = run.run_id,
+    workflow_name = run.get_workflow_display(),
+    date = run.date,
+    status = status,
+    color = color,
+    url = url,
+    )
+
+    text = (
+        "You can access the results and logfiles or re-run the workflow "
+        "using the Run ID link above.\n"
         "Please do not reply to this email.\n\n"
         "Cheers,\n"
         "Integrated data analysis platform (IDAP),\n"
         "Shahlab Dev Team."
         )
-    msg = msg.format(
-        user = user.first_name,
-        run_id = run.run_id,
-        workflow_name = run.get_workflow_display(),
-        date = run.date,
-        status = run.get_status_display(),
-        url = url,
-        )
-    Body = '\r\n'.join([
-        'To: %s' % To,
-        'From: %s' % From,
-        'Subject: %s' % Subject,
-        '', msg
-        ])
+
+    body1 = MIMEText(html, 'html')
+    body2 = MIMEText(text, 'plain')
+    msg.attach(body1)
+    msg.attach(body2)
+
     try:
         server = smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT)
         server.ehlo()
         server.starttls()
-        server.login(From, settings.EMAIL_PASSWORD)
-        server.sendmail(From, [To], Body)
+        server.login(addr_from, settings.EMAIL_PASSWORD)
+        server.sendmail(addr_from, [addr_to], msg.as_string())
         server.close()
         return True
     except:
