@@ -113,17 +113,35 @@ class Kronos(object):
 
 def notify(run):
     """ send an email notification when workflow status changes."""
-    Subject = "Status update for {}".format(run.get_workflow_display())
-    To = User.objects.get(username=run.user).email
-    From = settings.EMAIL_ADDRESS
-    msg = "Hi {0},\n\n"
-    msg += "There is an update in the status ({1}) of your workflow "
-    msg += "run: {2}."
-    msg += "\n\nPlease do NOT reply to this email."
-    msg += "\nShalab Dev Team."
+    user = User.objects.get(username=run.user)
     url = settings.HOST_URL
     url += run.get_absolute_url()
-    msg = msg.format(run.user, run.get_status_display(), url)
+
+    Subject = "Status update for your workflow run"
+    To = user.email
+    From = settings.EMAIL_ADDRESS
+    msg = (
+        "Hi {user},\n\n"
+        "There is an update in the status of the following workflow run:\n\n"
+        "Run ID: {run_id}\n"
+        "Workflow name: {workflow_name}\n"
+        "Date: {date}\n"
+        "Current status: {status}\n\n"
+        "To re-run or to access the results and logfiles use this link:\n"
+        "{url}\n\n"
+        "Please do not reply to this email.\n\n"
+        "Cheers,\n"
+        "Integrated data analysis platform (IDAP),\n"
+        "Shahlab Dev Team."
+        )
+    msg = msg.format(
+        user = user.first_name,
+        run_id = run.run_id,
+        workflow_name = run.get_workflow_display(),
+        date = run.date,
+        status = run.get_status_display(),
+        url = url,
+        )
     Body = '\r\n'.join([
         'To: %s' % To,
         'From: %s' % From,
