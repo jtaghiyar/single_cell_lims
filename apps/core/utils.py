@@ -9,6 +9,7 @@ import pandas as pd
 import yaml
 from string import Template
 from collections import OrderedDict
+from datetime import date
 
 #===============
 # Django imports
@@ -101,7 +102,6 @@ class SampleSheet(object):
 
     def __init__(self, pk):
         self._sequencing = get_object_or_404(Sequencing, pk=pk)
-        self._sheet_name = str(self._sequencing) + '_samplesheet.csv'
         self._header = os.path.join(settings.BASE_DIR,
             "templates/template_samplesheet_header.html")
         self._colnames = [
@@ -123,7 +123,9 @@ class SampleSheet(object):
 
     @property
     def sheet_name(self):
-        return self._sheet_name
+        fc_id = self._sequencing.sequencingdetail.flow_cell_id
+        sheet_name = 'SampleSheet_%s.csv' % fc_id
+        return sheet_name
 
     def write_header(self, ofilename):
         """write the header section of the sequencing SampleSheet."""
@@ -201,7 +203,7 @@ def generate_gsc_form(pk, metadata):
     sample_df = gsc_form.data_df
     header1 = gsc_form.meta_header
     header2 = gsc_form.data_header
-    form_name = gsc_form.form_name
+    form_name = gsc_form.get_form_name(metadata["sow"])
     ofilename = os.path.join(settings.MEDIA_ROOT, form_name)
 
     workbook = Submission(pool_df, sample_df, ofilename)
@@ -225,7 +227,6 @@ class GSCForm(object):
         self._libquant = self._library.libraryquantificationandstorage
         self._sample = self._library.sample
         self._sample_addinfo = self._sample.additionalsampleinformation
-        self._form_name = str(self._sequencing) + '_gsc_submission_form.xlsx'
         self._meta_header = os.path.join(settings.BASE_DIR,
             "templates/template_gsc_meta_header.html")
         self._data_header = os.path.join(settings.BASE_DIR,
@@ -305,10 +306,6 @@ class GSCForm(object):
         return self._sequencing
 
     @property
-    def form_name(self):
-        return self._form_name
-
-    @property
     def meta_header(self):
         return yaml.load(open(self._meta_header), Loader = YODLoader)
 
@@ -323,6 +320,18 @@ class GSCForm(object):
     @property
     def data_df(self):
         return self._data_df
+
+    def get_form_name(self, statement_of_work):
+        "create the proper name for the form."
+        form_name = '_'.join([
+            'Aparicio',
+            statement_of_work,
+            'Constructed_Library-Submission',
+            date.today().strftime("%d%B%Y"),
+            self._sample.sample_id,
+            self._library.pool_id,
+            ]) + '.xlsx'
+        return form_name
 
     def _get_meta_df(self):
         """return a dataframe of metadata information for self._sequencing."""
@@ -343,7 +352,7 @@ class GSCForm(object):
         self._sequencing.get_read_type_display(),
         self._sequencing.read1_length,
         self._sequencing.sequencing_goal,
-        "",
+        "N/A",
         self._sequencing.format_for_data_submission,
         "",
         ]
@@ -384,10 +393,10 @@ class GSCForm(object):
         library_columns = {
         'Tube Label': 'NA', #self.library.library_tube_label,
         'Sample Collection Date': self._library.librarysampledetail.sample_spot_date,
-        'DNA Volume (uL)': self._libquant.dna_volume,
-        'DNA Concentration (nM)': self._libquant.dna_concentration_nm,
-        'Storage Medium': self._libquant.storage_medium,
-        'Quantification Method': self._libquant.quantification_method,
+        'DNA Volume (uL)': "", #self._libquant.dna_volume,
+        'DNA Concentration (nM)': "", #self._libquant.dna_concentration_nm,
+        'Storage Medium': "", #self._libquant.storage_medium,
+        'Quantification Method': "", #self._libquant.quantification_method,
         'Library Type': self._libconst.library_type,
         'Library Construction Method': self._libconst.library_construction_method,
         'Size Range (bp)': self._libquant.size_range,
