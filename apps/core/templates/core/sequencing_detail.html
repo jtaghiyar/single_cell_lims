@@ -6,15 +6,35 @@ Sequencing Details
 {% endblock %}
 
 {% block body %}
+<!-- Download an already made GSC submission form -->
+<!-- <iframe width="1" height="1" frameborder="0" src="[File location]"></iframe> -->
+{% if download %}
+<body onload="window.location.href='{% url "core:sequencing_get_gsc_form" pk=sequencing.pk %}'">
+{% endif %}
+<!-- End of Download an already made GSC submission form -->
+
 <!-- Meta Information -->
-<div class="container card">
+<div class="container" style="background-color:#FFF3E0;">
+
+    <!-- action list -->
     <div style="float:right; margin-top:5px;">
+        {% if not sequencing.library.has_sublibrary_info %}
+        <h5><i class="text-warning">No Sublibrary Information available!</i></h5>
+        {% endif %}
         <select class="selectpicker" id="action">
+        <option value="#" disabled selected>--select an action--</option>
+        {% if sequencing.library.has_sublibrary_info %}
         <option value="{% url 'core:sequencing_get_samplesheet' pk=sequencing.pk %}">Download SampleSheet</option>
-        <option value="{% url 'core:sequencing_get_gsc_form' pk=sequencing.pk %}">Create GSC submission form</option>
-      </select>
-      <button class="btn btn-primary btn-sm" onclick="window.location.href=document.getElementById('action').value" class="btn btn-default">Go</button>
+        <option value="{% url 'core:sequencing_create_gsc_form' pk=sequencing.pk %}">Create GSC submission form</option>
+        {% else %}
+        <option disabled>Download SampleSheet</option>
+        <option disabled>Create GSC submission form</option>
+        {% endif %}
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="window.location.href=document.getElementById('action').value" class="btn btn-default">Go</button>
     </div>
+    <!-- end of action list -->
+
     <table class="table-condensed">
         <tr>
             <th id="thid">Library:</th>

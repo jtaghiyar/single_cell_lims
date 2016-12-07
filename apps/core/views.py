@@ -37,6 +37,8 @@ from .forms import (
     SublibraryForm,
     SequencingForm,
     SequencingDetailInlineFormset,
+    GSCFormDeliveryInfo,
+    GSCFormSubmitterInfo,
     ProjectForm
     )
 from .utils import (
@@ -472,7 +474,14 @@ def sequencing_list(request):
 def sequencing_detail(request, pk):
     """sequencing detail page."""
     sequencing = get_object_or_404(Sequencing, pk=pk)
-    context = {'sequencing': sequencing}
+    key = "gsc_form_metadata_%s" % pk
+    donwload = False
+    if key in request.session.keys():
+        donwload = True
+    context = {
+    'sequencing': sequencing,
+    'download': donwload,
+    }
     return context
             
 @Render("core/sequencing_create.html")
@@ -592,9 +601,50 @@ def sequencing_get_samplesheet(request, pk):
     os.remove(ofilepath)
     return response
 
+@method_decorator(login_required, name='dispatch')
+class SequencingCreateGSCFormView(TemplateView):
+
+    """
+    Sequencing GSC submission form.
+    """
+
+    template_name = "core/sequencing_create_gsc_form.html"
+
+    def get_context_data(self, pk):
+        context = {
+        'pk': pk,
+        'delivery_info_form': GSCFormDeliveryInfo(),
+        'submitter_info_form': GSCFormSubmitterInfo(),
+        }
+        return context
+
+    def get(self, request, pk):
+        context = self.get_context_data(pk)
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        sequencing = get_object_or_404(Sequencing, pk=pk)
+        context = self.get_context_data(pk)
+        delivery_info_form = GSCFormDeliveryInfo(request.POST)
+        submitter_info_form = GSCFormSubmitterInfo(request.POST)
+        if delivery_info_form.is_valid() and submitter_info_form.is_valid():
+            key = "gsc_form_metadata_%s" % pk
+            request.session[key] = request.POST
+            msg = "Successfully started downloding the GSC submission form."
+            messages.success(request, msg)
+            return HttpResponseRedirect(sequencing.get_absolute_url())
+        else:
+            context['delivery_info_form'] = delivery_info_form
+            context['submitter_info_form'] = submitter_info_form
+            msg = "please fix the errors below."
+            messages.error(request, msg)
+        return render(request, self.template_name, context)
+
 def sequencing_get_gsc_form(request, pk):
     """generate downloadable GSC submission form."""
-    ofilename, ofilepath = generate_gsc_form(pk)
+    key = "gsc_form_metadata_%s" % pk
+    metadata = request.session.pop(key)
+    ofilename, ofilepath = generate_gsc_form(pk, metadata)
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % ofilename
     ofile = open(ofilepath, 'r')
@@ -602,7 +652,6 @@ def sequencing_get_gsc_form(request, pk):
     ofile.close()
     os.remove(ofilepath)
     return response
-
 
 #============================
 # Search view
