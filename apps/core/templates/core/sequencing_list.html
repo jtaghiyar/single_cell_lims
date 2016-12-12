@@ -18,6 +18,7 @@ List of Sequencings
                     <th>Sample ID</th>
                     <th>Chip ID</th>
                     <th>Submission date</th>
+                    <th>Flow cell/Lane ID</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,6 +28,7 @@ List of Sequencings
                     <td><a href="{% url 'core:sequencing_detail' pk=sequencing.pk %}">{{sequencing.library.sample.sample_id}}</a></td>
                     <td>{{sequencing.library.pool_id}}</td>
                     <td>{{sequencing.submission_date}}</td>
+                    <td>{{sequencing.sequencingdetail.flow_cell_id}}</td>
                     <td>
                         <p style="float:right;"><a style="margin-right:2px;" href="{% url 'core:sequencing_update' pk=sequencing.pk %}"><i class="fa fa-pencil" aria-hidden="true" style="color:orange;" "></i> edit</a>
                         <a href="{% url 'core:sequencing_delete' pk=sequencing.pk %}"><i class="icon-remove-sign" style="color:red"></i> delete</a></p>
