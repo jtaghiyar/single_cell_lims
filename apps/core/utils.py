@@ -85,11 +85,14 @@ class HistoryManager(object):
 #======================
 # generate sample sheet
 #----------------------
-def generate_samplesheet(pk):
-    """generate samplesheet for the given Sequencing using template in SC-180."""
+def generate_samplesheet(pk, wdir=None):
+    """generate samplesheet for the given Sequencing."""
     samplesheet = SampleSheet(pk)
     sheet_name = samplesheet.sheet_name
-    ofilename = os.path.join(settings.MEDIA_ROOT, sheet_name)
+    if wdir:
+        ofilename = os.path.join(wdir, sheet_name)
+    else:
+        ofilename = os.path.join(settings.MEDIA_ROOT, sheet_name)
     samplesheet.write_header(ofilename)
     samplesheet.write_data(ofilename)
     return sheet_name, os.path.abspath(ofilename)
