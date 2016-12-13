@@ -21,7 +21,6 @@ from django.conf import settings
 from .models import Workflow
 from django.contrib.auth.models import User
 
-
 logging.basicConfig(
     format='%(asctime)s %(message)s',
     level=logging.DEBUG
@@ -142,6 +141,13 @@ def notify(run):
                 <li><b>Date:</b> {date}</li>
                 <li><b>Current status:</b> <font color="{color}">{status}</font></li>
             </ul>
+            <p>
+            You can access the results and logfiles or re-run the workflow using the Run ID link above.<br>
+            Please do not reply to this email.<br><br>
+            Cheers,<br>
+            Integrated data analysis platform (IDAP),<br>
+            Shahlab Dev Team.
+            </p>
         </body>
     </html>
     """.format(
@@ -154,19 +160,8 @@ def notify(run):
     url = url,
     )
 
-    text = (
-        "You can access the results and logfiles or re-run the workflow "
-        "using the Run ID link above.\n"
-        "Please do not reply to this email.\n\n"
-        "Cheers,\n"
-        "Integrated data analysis platform (IDAP),\n"
-        "Shahlab Dev Team."
-        )
-
-    body1 = MIMEText(html, 'html')
-    body2 = MIMEText(text, 'plain')
-    msg.attach(body1)
-    msg.attach(body2)
+    body = MIMEText(html, 'html')
+    msg.attach(body)
 
     try:
         server = smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT)
