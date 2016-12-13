@@ -15,7 +15,7 @@ import subprocess as sub
 # Django imports
 #----------------------------
 from .models import Run, Workflow
-from .utils import Runner, get_samples_file, notify
+from .utils import Runner, SamplesFile, notify
 from django.conf import settings
 
 
@@ -71,7 +71,7 @@ class KronosTask(Task):
         wdir = os.path.join(settings.WORKING_DIR_ROOT, pname, run.user, run_id)
         # if not os.path.exists(wdir):
         #     os.makedirs(wdir)
-        samples_file = get_samples_file(run.sequencings.all(), wdir)
+        samples_file = SamplesFile(run.sequencings.all(), wdir).get(wf.name)
 
         cmd = "kronos run"
         cmd_args = [

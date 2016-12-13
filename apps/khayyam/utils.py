@@ -9,8 +9,10 @@ import subprocess as sub
 import logging
 import smtplib
 import traceback
+import warnings
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from glob import glob
 
 
 #============================
@@ -20,6 +22,8 @@ from email.mime.text import MIMEText
 from django.conf import settings
 from .models import Workflow
 from django.contrib.auth.models import User
+from khayyam.helpers.generate_samples import GenSamples
+from core.utils import generate_samplesheet
 
 logging.basicConfig(
     format='%(asctime)s %(message)s',
@@ -27,12 +31,83 @@ logging.basicConfig(
     )
 
 
-#==================================================
-# Kronos initilaization and run
-#--------------------------------------------------
-def get_samples_file(data, *args, **kwargs):
-    """make a samples file and save it in temporary working directory."""
-    return "/genesis/shahlab/IDAP/dev/test/samples_file_short.txt"
+#============================
+# Utils and helpers
+#----------------------------
+class SamplesFile(object):
+
+    """
+    Input samples file for different workflows.
+    """
+
+    def __init__(self, sequencings, working_dir):
+        # Currenly we only support running workflow for a single sequencing.
+        self.sequencing = sequencings[0]
+        self.inputs_dir = os.path.join(working_dir, 'inputs')
+        try:
+            os.makedirs(self.inputs_dir)
+        except:
+            pass
+
+    def get(self, attr_name):
+        try:
+            return self.__getattribute__(attr_name)()
+        except AttributeError:
+            #do sth
+            raise
+
+    def single_cell_analysis_pipeline_bcl2fastq(self):
+        """samples file for bcl2fastq workflow."""
+        pass
+
+    def single_cell_analysis_pipeline_nextseq_part1(self):
+        """samples file for part1 of single cell/ QC workflow nextseq data."""
+        pass
+
+    def single_cell_analysis_pipeline_hiseq_part1(self):
+        """samples file for part1 of single cell/ QC workflow hiseq data."""
+        input_type = "part1"
+        data_path = self.sequencing.sequencingdetail.path_to_archive
+        sample_id = self.sequencing.library.sample.sample_id
+        _, samplesheet = generate_samplesheet(
+            self.sequencing.id,
+            self.inputs_dir
+            )
+        samples_filename = os.path.join(
+            self.inputs_dir,
+            "sc_hiseq_part1_samples_file.txt"
+            )
+        interval_filename = os.path.join(
+            self.inputs_dir,
+            "sc_hiseq_part1_interval_file.txt"
+            )
+
+        print '>' * 40, sample_id
+        gs = GenSamples(
+            data_path,
+            input_type,
+            samples_filename,
+            sample_id,
+            interval_filename,
+            samplesheet,
+            )
+
+        try:
+            gs.gen_part2()
+        except Exception as e:
+            print e
+            print "Make sure the data directory has proper structure.\n"
+            raise
+
+        return samples_filename
+
+    def single_cell_analysis_pipeline_part2(self):
+        """samples file for part2 of single cell workflow."""
+        pass
+
+    def _test(self):
+        """test samples file for singel cell part1 hiseq data."""
+        return "/genesis/shahlab/IDAP/dev/test/samples_file_short.txt"
 
 
 class Runner(object):
