@@ -69,8 +69,9 @@ class KronosTask(Task):
         qsub_options = repr(qsub_options)
 
         wdir = os.path.join(settings.WORKING_DIR_ROOT, pname, run.user, run_id)
-        # if not os.path.exists(wdir):
-        #     os.makedirs(wdir)
+        if not os.path.exists(wdir):
+            os.makedirs(wdir)
+
         samples_file = SamplesFile(run.sequencings.all(), wdir).get(wf.name)
 
         cmd = "kronos run"
