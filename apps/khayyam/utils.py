@@ -56,13 +56,31 @@ class SamplesFile(object):
             #do sth
             raise
 
-    def single_cell_analysis_pipeline_bcl2fastq(self):
+    def bcl2fastq_pipeline(self):
         """samples file for bcl2fastq workflow."""
-        pass
+        input_type = "bcl2fastq"
+        data_path = self.sequencing.sequencingdetail.path_to_archive
+        sample_id = self.sequencing.library.sample.sample_id
+        samples_filename = os.path.join(
+            self.inputs_dir,
+            "bcl2fastq_samples_file.txt"
+            )
 
-    def single_cell_analysis_pipeline_nextseq_part1(self):
-        """samples file for part1 of single cell/ QC workflow nextseq data."""
-        pass
+        gs = GenSamples(
+            input_file = data_path,
+            input_type = input_type,
+            samples = samples_filename,
+            sample_id = sample_id,
+            )
+
+        try:
+            gs.gen_bcl_fastq()
+        except Exception as e:
+            print e
+            print "Make sure the data directory has proper structure.\n"
+            raise
+
+        return samples_filename
 
     def single_cell_analysis_pipeline_hiseq_part1(self):
         """samples file for part1 of single cell/ QC workflow hiseq data."""
@@ -82,7 +100,42 @@ class SamplesFile(object):
             "sc_hiseq_part1_interval_file.txt"
             )
 
-        print '>' * 40, sample_id
+        gs = GenSamples(
+            input_file = data_path,
+            input_type = input_type,
+            samples = samples_filename,
+            sample_id = sample_id,
+            intervals = interval_filename,
+            samplesheet = samplesheet,
+            )
+
+        try:
+            gs.gen_qc()
+        except Exception as e:
+            print e
+            print "Make sure the data directory has proper structure.\n"
+            raise
+
+        return samples_filename
+
+    def single_cell_analysis_pipeline_nextseq_part1(self):
+        """samples file for part1 of single cell/ QC workflow nextseq data."""
+        input_type = "part1"
+        data_path = self.sequencing.sequencingdetail.path_to_archive
+        sample_id = self.sequencing.library.sample.sample_id
+        _, samplesheet = generate_samplesheet(
+            self.sequencing.id,
+            self.inputs_dir
+            )
+        samples_filename = os.path.join(
+            self.inputs_dir,
+            "sc_nextseq_part1_samples_file.txt"
+            )
+        interval_filename = os.path.join(
+            self.inputs_dir,
+            "sc_nextseq_part1_interval_file.txt"
+            )
+
         gs = GenSamples(
             data_path,
             input_type,
@@ -93,7 +146,7 @@ class SamplesFile(object):
             )
 
         try:
-            gs.gen_part2()
+            gs.gen_qc()
         except Exception as e:
             print e
             print "Make sure the data directory has proper structure.\n"
@@ -101,8 +154,12 @@ class SamplesFile(object):
 
         return samples_filename
 
-    def single_cell_analysis_pipeline_part2(self):
-        """samples file for part2 of single cell workflow."""
+    def single_cell_analysis_pipeline_hiseq_part2(self):
+        """samples file for part2 of single cell workflow hiseq data."""
+        pass
+
+    def single_cell_analysis_pipeline_nextseq_part2(self):
+        """samples file for part2 of single cell workflow nextseq data."""
         pass
 
     def _test(self):
