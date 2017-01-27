@@ -59,7 +59,7 @@ class LibraryAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
       ),
     ]
     inlines = [
-      SublibraryInformationInline,
+      # SublibraryInformationInline,
       LibrarySampleDetailInline,
       LibraryConstructionInformationInline,
       LibraryQuantificationAndStorageInline
