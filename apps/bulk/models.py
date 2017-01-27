@@ -162,6 +162,12 @@ class Library(models.Model, FieldValue):
         "Library type",
         choices=library_type_choices
         )
+    relates_to = models.ManyToManyField(
+        "self",
+        verbose_name="Relates to",
+        # null=True,
+        blank=True,
+        )
 
     def get_absolute_url(self):
         return reverse("bulk:library_detail", kwargs={"pk": self.pk})

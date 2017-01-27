@@ -19,6 +19,14 @@ Library Details
             {% endif %}
         </tr>
         {% endfor %}
+        <tr>
+            <th id="thid">Relates to:</th>
+            <td id="tdid">
+            {% for lib in library.relates_to.only %}
+                <a href="{{lib.get_absolute_url}}">{{lib}}</a><br>
+            {% endfor %}
+            </td>
+        </tr>
     </table>
 </div><br>
 <!-- end of Meta Information -->

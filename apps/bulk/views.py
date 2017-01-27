@@ -276,14 +276,14 @@ class LibraryUpdate(LibraryCreate):
     def get_context_data(self, pk):
         library = get_object_or_404(Library, pk=pk)
         # selected_projects = library.projects.names()
-        # selected_related_libs = library.relates_to.only()
+        selected_related_libs = library.relates_to.only()
         context = {
         'pk': pk,
         'lib_form': LibraryForm(instance=library),
         # 'projects': [t.name for t in Tag.objects.all()],
         # 'selected_projects': selected_projects,
-        # 'related_libs': Library.objects.all(),
-        # 'selected_related_libs': selected_related_libs
+        'related_libs': Library.objects.all(),
+        'selected_related_libs': selected_related_libs
         }
         return context
 
