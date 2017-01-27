@@ -1,0 +1,41 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+List of Samples
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding:0; margin-bottom:5px;">
+    <h4 style="float:left;">Select a sample to view its details</h4>
+    <a class="btn btn-primary btn-sm" style="float:right; margin-top:5px;" href="{% url 'bulk:sample_create' %}">Add Sample</a>
+</div>
+<div class="container" style="background-color:#F5F5F5;">
+    <div class="table-responsive">
+        <table id="datatable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sample ID</th>
+                    <th>Collaborator Sample ID</th>
+                    <th>Project name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sample in samples %}
+                <tr>
+                    <td><a href="{% url 'bulk:sample_detail' pk=sample.pk %}">{{sample.sample_id}}</a></td>
+                    <td>{{sample.collaborator_sample_id}}</td>
+                    <td>{{sample.project_name}}</td>
+                    <td>
+                        <p style="float:right;"><a style="margin-right:2px;" href="{% url 'bulk:sample_update' pk=sample.pk %}"><i class="fa fa-pencil" aria-hidden="true" style="color:orange;"></i> edit</a>
+                        <a href="{% url 'bulk:sample_delete' pk=sample.pk %}"><i class="icon-remove-sign" style="color:red"></i> delete</a></p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

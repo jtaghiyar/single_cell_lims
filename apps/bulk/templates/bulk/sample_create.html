@@ -1,0 +1,32 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Create Sample
+{% endblock %}
+
+{% block body %}
+<div class="container graybg">
+    <form action="{% url 'bulk:sample_create' %}" method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Sample Information</legend>
+            <table class="table-condensed">
+                <thead>
+                {{form}}
+                </thead>
+            </table>
+         </fieldset><br>
+         <fieldset>
+            <legend>Clinical Information</legend>
+            <table class="table-condensed">
+                <thead>
+                {{formset}}
+                </thead>
+            </table>
+         </fieldset>
+        <input class="btn btn-primary btn-sm" type="submit" name="create" value="Create">
+        <a class="btn btn-default btn-sm" href="{% url 'bulk:sample_list' %}">Cancel</a>
+    </form><br>
+</div>
+{% endblock %}

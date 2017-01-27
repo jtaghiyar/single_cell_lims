@@ -1,0 +1,32 @@
+{% extends "base_view.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Edit Sample
+{% endblock %}
+
+{% block body %}
+<div class="container graybg">
+	<form action="{% url 'bulk:sample_update' pk=pk %}" method="POST">
+		{% csrf_token %}
+         <fieldset>
+            <legend>Sample Information</legend>
+            <table class="table-condensed">
+                <thead>
+                {{form}}
+                </thead>
+            </table>
+         </fieldset>
+         <fieldset>
+            <legend>Clinical Information</legend>
+            <table class="table-condensed">
+                <thead>
+                {{formset}}
+                </thead>
+            </table>
+         </fieldset><br>
+    	<input class="btn btn-primary btn-sm" type="submit" name="update" value="Update">
+        <a class="btn btn-default btn-sm" href="{% url 'bulk:sample_detail' pk=pk %}">Cancel</a>
+	</form><br>
+</div>
+{% endblock %}
