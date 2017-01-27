@@ -64,19 +64,6 @@ Tag.get_libraries = get_libraries
 
 
 #============================
-# Index page
-#----------------------------
-@Render("core/index.html")
-def index_view(request):
-    context = {
-    'sample_size': Sample.objects.count(),
-    'library_size': Library.objects.count(),
-    'sequencing_size': Sequencing.objects.count()
-    }
-    return context
-
-
-#============================
 # Home page of the app
 #----------------------------
 @Render("core/home.html")
@@ -652,33 +639,3 @@ def sequencing_get_gsc_form(request, pk):
     ofile.close()
     os.remove(ofilepath)
     return response
-
-#============================
-# Search view
-#----------------------------
-def search_view(request):
-    query_str = request.GET.get('query_str')
-    instance = None
-
-    ## search for samples
-    qs = Sample.objects.filter(sample_id=query_str)
-    if qs:
-        instance = qs[0]
-        return HttpResponseRedirect(instance.get_absolute_url())
-
-    ## search for libraries
-    qs = Library.objects.filter(pool_id=query_str)
-    if qs:
-        instance = qs[0]
-        return HttpResponseRedirect(instance.get_absolute_url())
-
-    ## search for runs
-    qs = Run.objects.filter(run_id=query_str)
-    if qs:
-        instance = qs[0]
-        return HttpResponseRedirect(instance.get_absolute_url())
-
-    ## no match found message
-    msg = "Sorry, no match found."
-    messages.warning(request, msg)
-    return HttpResponseRedirect(reverse('index'))

@@ -21,13 +21,14 @@ Created on May 16, 2016
 from django.conf import settings
 from django.conf.urls import url, include, static
 from django.contrib import admin
-from core import views 
+from . import views
 
 urlpatterns = [
     url(r'^$', views.index_view, name='index'),    
     url(r'^admin/', admin.site.urls),
     url(r'^search/', views.search_view, name='search'),
     url(r'^apps/core/', include('core.urls')),
+    url(r'^apps/bulk/', include('bulk.urls')),
     url(r'^apps/account/', include('account.urls')),
     url(r'^apps/khayyam/', include('khayyam.urls')),
     url(r'^apps/picasso/', include('picasso.urls')),
