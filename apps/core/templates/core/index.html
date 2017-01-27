@@ -6,34 +6,60 @@ List of Tables
 {% endblock %}
 
 {% block body %}
-<div class="container">
-        <table class="table-striped" style="width:100%;">
-            <tbody>
-                <tr>
-                    <td><a href="{% url 'core:sample_list' %}">Samples</a> <i class="counter">{{sample_size}}</i></td>
-                    <td>
-                        <p style="float:right;">
-                        <a href="{% url 'core:sample_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="{% url 'core:library_list' %}">Libraries</a> <i class="counter">{{library_size}}</i></td>
-                    <td>
-                        <p style="float:right;">
-                        <a href="{% url 'core:library_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="{% url 'core:sequencing_list' %}">Sequencings</a> <i class="counter">{{sequencing_size}}</i></td>
-                    <td>
-                        <p style="float:right;">
-                        <a href="{% url 'core:sequencing_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="{% url 'core:project_list' %}">Projects</a></td>
-                </tr>
-            </tbody>
-        </table>
+<div class="container" style="border:solid 1px #E0E0E0; border-radius: 3px;">
+    <a style="text-decoration: none;" href="#sc_collapse" data-toggle="collapse"><h4>Singel Cell</h4></a>
+    <div id="sc_collapse" class="collapse">
+    <p><table class="table-striped" style="width:100%;">
+        <tbody>
+            <tr>
+                <td><a href="{% url 'core:sample_list' %}">Samples</a> <i class="counter">{{sc_sample_size}}</i></td>
+                <td>
+                    <p style="float:right;">
+                    <a href="{% url 'core:sample_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'core:library_list' %}">Libraries</a> <i class="counter">{{sc_library_size}}</i></td>
+                <td>
+                    <p style="float:right;">
+                    <a href="{% url 'core:library_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'core:sequencing_list' %}">Sequencings</a> <i class="counter">{{sc_sequencing_size}}</i></td>
+                <td>
+                    <p style="float:right;">
+                    <a href="{% url 'core:sequencing_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'core:project_list' %}">Projects</a></td>
+            </tr>
+        </tbody>
+    </table></p>
+    </div>
+</div>
+<div class="container" style="border:solid 1px #E0E0E0; border-radius: 3px;">
+    <a style="text-decoration: none;" href="#wg_collapse" data-toggle="collapse"><h4>Whole Genome</h4></a>
+    <div id="wg_collapse" class="collapse">
+    <table class="table-striped" style="width:100%">
+        <tbody>
+            <tr>
+                <td><a href="{% url 'bulk:sample_list' %}">Samples</a> <i class="counter">{{wg_sample_size}}</i></td>
+                <td>
+                    <p style="float:right;">
+                    <a href="{% url 'bulk:sample_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'bulk:library_list' %}">Libraries</a> <i class="counter">{{wg_library_size}}</i></td>
+                <td>
+                    <p style="float:right;">
+                    <a href="{% url 'bulk:library_create' %}"><i class="fa fa-plus" aria-hidden="true" style="color:green;"></i> Add</a></p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
 </div>
 {% endblock %}
