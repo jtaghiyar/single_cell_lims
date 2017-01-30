@@ -1,5 +1,6 @@
 {% extends "base_view.html" %}
 {% load staticfiles %}
+{% load widget_tweaks%}
 
 {% block title %}
 Create Sample
@@ -13,7 +14,20 @@ Create Sample
             <legend>Sample Information</legend>
             <table class="table-condensed">
                 <thead>
-                {{form}}
+                {% for field in form %}
+                <tr>
+                    <th>
+                    {{field.label_tag}}
+                    </th>
+                    <td>
+                    {{ field.errors }}
+                    {{ field|attr:"data-live-search:'true'"|add_class:"selectpicker form-control" }}
+                    {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text }}</p>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
                 </thead>
             </table>
          </fieldset><br>
@@ -21,7 +35,25 @@ Create Sample
             <legend>Clinical Information</legend>
             <table class="table-condensed">
                 <thead>
-                {{formset}}
+                {{ formset.management_form }}
+                {% for f in formset %}
+                {% for field in f %}
+                <tr>
+                    {% if not field.name in no_show_fields %}
+                        <th>
+                        {{field.label_tag}}
+                        </th>
+                        <td>
+                        {{ field.errors }}
+                        {{ field|attr:"data-live-search:'true'"|add_class:"selectpicker form-control" }}
+                        {% if field.help_text %}
+                            <p class="helptext">{{ field.help_text }}</p>
+                        {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                {% endfor %}
                 </thead>
             </table>
          </fieldset>

@@ -44,9 +44,10 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig', 
     'khayyam.apps.KhayyamConfig',
     'picasso.apps.PicassoConfig',
+    'bulk.apps.BulkConfig',
     'taggit',
     'simple_history',
-    # 'bootstrap3',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -111,7 +112,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -199,7 +199,7 @@ CELERY_ROUTES = {
 EMAIL_ADDRESS = ""
 EMAIL_PASSWORD = ""
 SMTP_SERVER = ""
-SMTP_PORT = 
+SMTP_PORT = ''
 
 #=========================
 # Genesis cluster settings

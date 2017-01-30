@@ -88,7 +88,8 @@ def sample_create(request):
     
     context = {
         'form': form,
-        'formset': formset
+        'formset': formset,
+        'no_show_fields': ['id', 'sample', 'DELETE'],
         }
     return context
 

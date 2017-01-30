@@ -1,5 +1,6 @@
 {% extends "base_view.html" %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block title %}
 Create Library
@@ -30,13 +31,13 @@ Create Library
                         <select id="id_sample" name="sample">
                             <option value="{{sample_id}}" selected="selected">{{sample}}</option>
                     {% elif field.name == "relates_to" %}
-                        <select class="selectpicker" id="id_relates_to" name="relates_to" multiple data-none-selected-text="--------">
+                        <select class="selectpicker" id="id_relates_to" name="relates_to" multiple data-live-search='true' data-none-selected-text="--------">
                             {% for lib in related_libs %}
                             <option value={{lib.id}}>{{lib}}</option>
                             {% endfor %}
                         </select>
                     {% else %}
-                        {{ field }}
+                        {{ field|attr:"data-live-search:'true'"|add_class:"selectpicker form-control" }}
                     {% endif %}
                     {% if field.help_text %}
                         <p class="helptext">{{ field.help_text }}</p>
