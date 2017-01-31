@@ -28,7 +28,7 @@ Create Library
                             {% endfor %}
                         </select>
                     {% elif field.name == "sample" and sample_id %}
-                        <select id="id_sample" name="sample">
+                        <select class="selectpicker" id="id_sample" name="sample">
                             <option value="{{sample_id}}" selected="selected">{{sample}}</option>
                     {% elif field.name == "relates_to" %}
                         <select class="selectpicker" id="id_relates_to" name="relates_to" multiple data-live-search='true' data-none-selected-text="--------">
