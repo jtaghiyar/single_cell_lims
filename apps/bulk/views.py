@@ -127,6 +127,7 @@ def sample_update(request, pk):
         'form': form,
         'formset': formset,
         'pk': pk,
+        'no_show_fields': ['id', 'sample', 'DELETE'],
     }
     return context
 
