@@ -1,5 +1,6 @@
 {% extends "base_view.html" %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block title %}
 Workflow Run
@@ -37,7 +38,7 @@ Workflow Run
                         {% endif %}
                     </select>
                     {% else %}
-                        {{ field }}
+                        {{ field|attr:"data-live-search:'true'"|add_class:"selectpicker form-control" }}
                     {% endif %}
                     {% if field.help_text %}
                         <p class="helptext">{{ field.help_text }}</p>
@@ -48,6 +49,7 @@ Workflow Run
                 </thead>
             </table>
         </fieldset><br>
+        <fieldset>
             <legend>Kronos Settings</legend>
             <table class="table-condensed">
                 <thead>
