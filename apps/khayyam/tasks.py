@@ -92,7 +92,9 @@ class KronosTask(Task):
         return cmd + ' ' + ' '.join(map(str, cmd_args))
         
     def on_success(self, retval, task_id, *args, **kwargs): 
-        """update the run status on success."""       
+        """update the run status on success."""
+        ## Fixeme: this is a test with random assignments.
+        ## The actual status needs to be retrieved.
         pk = args[0][0]
         run = Run.objects.get(pk=pk)
         status = ["D", "F", "S"]
