@@ -148,7 +148,7 @@ class SampleCreate(TemplateView):
         messages.error(request, msg)
         return self.get_context_and_render(request, form, formset)
 
-class SampleUpdate(SampleCreate):
+class SampleUpdate(TemplateView):
     """
     Sample update page.
     """
@@ -305,6 +305,7 @@ class LibraryCreate(TemplateView):
                         region_metadata = sublib_form.cleaned_data.get('smartchipapp_region_metadata')
                         sublib_results = sublib_form.cleaned_data.get('smartchipapp_results')
                         if region_codes is not None and region_metadata is not None and sublib_results is not None:
+                            instance.sublibraryinformation_set.all().delete()
                             create_sublibrary_models(instance, sublib_results, region_codes, region_metadata)
                         # save the formsets.
                         [formset.save() for formset in formsets.values()]
